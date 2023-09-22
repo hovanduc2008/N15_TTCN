@@ -3,76 +3,100 @@
 @php
     $page_title = "Quản lý tác giả";
     $sub_page_title = "Sửa thông tin tác giả";
+
+    $genders = [
+        'male' => "Male",
+        'female' => "Female",
+    ]
 @endphp
 
 @section('main')
 
-    <div class="p-3" >
-        <form action="" method="post" enctype = "multipart/form-data">
-            <div class="input-group input-group-static mb-4">
-                <label>Mã tác giả</label>
-                <input type="text" disabled  class="form-control" value = "{{$foundAuthor -> id}}">
-            </div>
-            <div class="input-group input-group-static mb-4">
-                <label>Tên tác giả</label>
-                <input type="text" class="form-control" name = "name" value = "{{$foundAuthor -> name}}">
-            </div>
-            <div>
-                <label for="">Tiểu sử</label>
-                <textarea name="" id="" class = "form-control" cols = "100" name="biography">
-                    {{$foundAuthor -> biography}}
-                </textarea>
-            </div>
-            <div>
-                <label for="">Trạng thái</label>
-                @if($foundAuthor -> status == 1) 
-                    <input checked type="checkbox" name = "is_active"> 
-                @else
-                    <input type="checkbox" name = "is_active">
-                @endif
-            </div>
-            <div class = "mt-4">
-                <label for="">Hình ảnh: </label>
-                <img src="{{$foundAuthor -> image}}" alt="">
-            </div>
-            <div class = "mt-4">
-                <label for="">Xóa Hình ảnh: </label>
-                <input type="checkbox" name="is_delete">
-            </div>
-            <div class = "mt-4">
-                <label for="">Thay đổi Hình ảnh</label>
-                <input type="file" class="form-control" name="upload">
-            </div>
-            <div class = "d-flex justify-content-sm-end mt-3">
-                <a href="{{route('admin.authors')}}" class = "btn btn-outline-secondary mx-sm-2">Quay lại</a>
-                <button type="button" 
-                onclick = "renderModal('{{route('admin.author.delete', $foundAuthor -> id)}}')" 
-                class="btn me-2 bg-gradient-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Xóa Tác Giả
-                </button>
-                <button type = "submit" class = "btn btn-info">Update</button>
-            </div>
-            @csrf
-            @method('PUT')
-        </form>
-    </div>
-@endsection
-    <script>
-        var $ = document.querySelector.bind(document);
-        function renderModal (route) {
-            
-            $('.modal-title').innerHTML = 'Xác nhận xóa tác giả';
-            $('.modal-body').innerHTML = 'Các sách thuộc tác giả này sẽ bị xóa';
-            var btnSubmit = `
-                <form action = "${route}" method='post'>
+<div class="row">
+    <div class="col-12">
+        <div class="card m-b-20">
+            <div class="card-body">
+                <form action = "{{route('admin.author.handleEdit', $foundAuthor -> id)}}" method = "POST" enctype = "multipart/form-data">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="name">Author ID</label>
+                                <input id="name" disabled value = "{{$foundAuthor -> id}}" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Author Name</label>
+                                <input id="name" name="name" value = "{{$foundAuthor -> name}}" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input id="email" name="email" value = "{{$foundAuthor -> email}}" type="text" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="biography">Biography</label>
+                                <textarea class="form-control" id="biography" name ="biography" rows="5">{{$foundAuthor -> biography}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number</label>
+                                <input id="phone_number" name="phone_number" value = "{{$foundAuthor -> phone_number}}" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input id="address" name="address" value = "{{$foundAuthor -> address}}"  type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Gender</label>
+                                <select class="form-control select2" name = "gender" required>
+                                    @foreach($genders as $key => $gender)
+                                        @if($key == $foundAuthor -> gender)
+                                            <option selected  value="{{$key}}">{{$gender}}</option>
+                                        @else
+                                            <option value="{{$key}}">{{$gender}}</option>
+                                        @endif
+                                    @endforeach
+                                        
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="date_of_birth">Date of Birth</label>
+                                <input id="date_of_birth" name="date_of_birth" value = "{{$foundAuthor -> date_of_birth}}" type="date" class="form-control">
+                            </div>
+                            
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Product Image</label> <br/>
+                                <img src="{{$foundAuthor -> image}}" alt="product img" class="img-fluid" style="max-width: 200px;" />
+                                <br/>
+                                <input type="file" name = "upload_image" class="btn btn-purple m-t-10 waves-effect waves-light ">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success waves-effect waves-light">Save Changes</button>
+                    <button type="submit" class="btn btn-secondary waves-effect">
+                        <a href="">Cancel</a>
+                    </button>
+                    @method('PUT')
                     @csrf
-                    @method('DELETE')
-                    <button type='submit' class = "btn btn-danger" name=''>Xác nhận xóa</button>
                 </form>
-            `
-            $('.modal-footer').innerHTML = btnSubmit;
-        }
-    </script>
+
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+    
+
 @section('scripts')
 @endsection
 

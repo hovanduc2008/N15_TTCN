@@ -15,12 +15,20 @@ class Product extends Model
         'title',
         'slug',
         'image',
+        'thumbnail',
         'price',
         'quantity',
         'author_id',
         'category_id',
         'description',
         'publication_date',
+        'content',
+        'meta_title',
+        'meta_description',
+        'deleted_at',
         'status'
     ];
+
+    
+
 }

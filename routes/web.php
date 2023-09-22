@@ -34,8 +34,8 @@ Route::prefix('/admin') -> group(function() {
         Route::get('/register', [AuthController::class, 'register']) -> name('admin.register');
         Route::get('/login', [AuthController::class, 'login']) -> name('admin.login');
 
-        Route::post('/register', [AuthController::class, 'handleRegister']);
-        Route::post('/login', [AuthController::class, 'handleLogin']);
+        Route::post('/register', [AuthController::class, 'handleRegister'] ) -> name('admin.handleRegister');
+        Route::post('/login', [AuthController::class, 'handleLogin']) -> name('admin.handleLogin');
         Route::get('/logout', [AuthController::class, 'handelLogout']) -> name('admin.logout');
     });
 
@@ -49,10 +49,10 @@ Route::prefix('/admin') -> group(function() {
         Route::get('/', [ProductController::class, 'index']) -> name('admin.products');
 
         Route::get('create', [ProductController::class, 'createForm']) -> name('admin.product.create');
-        Route::post('create', [ProductController::class, 'handleCreate']);
+        Route::post('create', [ProductController::class, 'handleCreate']) -> name('admin.product.handleCreate');
 
         Route::get('edit/{id}', [ProductController::class, 'editForm']) -> name('admin.product.edit');
-        Route::put('edit/{id}', [ProductController::class, 'handleEdit']);
+        Route::put('edit/{id}', [ProductController::class, 'handleEdit']) -> name('admin.product.handleEdit');
 
         Route::delete('delete/{id}', [ProductController::class, 'handleDelete']) -> name('admin.product.delete');
 
@@ -64,10 +64,10 @@ Route::prefix('/admin') -> group(function() {
         Route::get('/', [CategoryController::class, 'index']) -> name('admin.categories');;
 
         Route::get('create', [CategoryController::class, 'createForm']) -> name('admin.category.create');
-        Route::post('create', [CategoryController::class, 'handleCreate']);
+        Route::post('create', [CategoryController::class, 'handleCreate']) -> name('admin.category.handleCreate');
 
         Route::get('edit/{id}', [CategoryController::class, 'editForm']) -> name('admin.category.edit');
-        Route::put('edit/{id}', [CategoryController::class, 'handleEdit']);
+        Route::put('edit/{id}', [CategoryController::class, 'handleEdit']) -> name('admin.category.handleEdit');
 
         Route::delete('delete/{id}', [CategoryController::class, 'handleDelete']) -> name('admin.category.delete');
     });
@@ -77,10 +77,10 @@ Route::prefix('/admin') -> group(function() {
         Route::get('/', [AuthorController::class, 'index']) -> name('admin.authors');;
 
         Route::get('create', [AuthorController::class, 'createForm']) -> name('admin.author.create');
-        Route::post('create', [AuthorController::class, 'handleCreate']);
+        Route::post('create', [AuthorController::class, 'handleCreate']) -> name('admin.author.handleCreate');
 
         Route::get('edit/{id}', [AuthorController::class, 'editForm']) -> name('admin.author.edit');
-        Route::put('edit/{id}', [AuthorController::class, 'handleEdit']);
+        Route::put('edit/{id}', [AuthorController::class, 'handleEdit']) -> name('admin.author.handleEdit');
 
         Route::delete('delete/{id}', [AuthorController::class, 'handleDelete']) -> name('admin.author.delete');
     });

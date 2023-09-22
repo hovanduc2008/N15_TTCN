@@ -19,14 +19,19 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('added_by'); 
             $table->string('title');
             $table->string('slug');
-            $table->string('image') -> nullable();
+            $table->string('image') -> default('');
+            $table->string('thumbnail');
             $table->unsignedBigInteger('author_id'); 
             $table->unsignedBigInteger('category_id'); 
             $table->bigInteger('price');
             $table->bigInteger('quantity');
             $table->text('description') -> nullable();
+            $table->text('content') -> nullable();
+            $table->string('meta_title') -> nullable();
+            $table->text('meta_description') -> nullable();
             $table->enum('status', [0, 1]) -> default(1);
             $table->date('publication_date') -> nullable();
+            $table->datetime('deleted_at') -> nullable();
             $table->timestamps();
 
             $table->foreign('added_by')->references('id')->on('users');

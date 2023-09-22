@@ -1,0 +1,9 @@
+Quản lý người đọc
+Quản lý thông tin người mượn sách
+- Thời gian mượn
+- Tên sách
+- Tác giả
+- Thời gian trả
+- Người cho mượn
+
+Quản lý số lượng sách(Thống kê sl sách còn lại,Tổng số sách có,Chi tiết, sl người mượn)

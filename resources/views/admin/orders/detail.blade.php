@@ -21,117 +21,101 @@
 @endphp
 
 @section('main')
-    <div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="input-group input-group-static my-3">
-                    <label>Mã đơn hàng: </label>
-                    <input type="email" class="form-control" disabled  value = "#{{$foundOrder -> id}}">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group input-group-static my-3">
-                    <label>Người nhận: </label>
-                    <input type="email" class="form-control" disabled  value = "{{$foundOrder -> full_name}}">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group input-group-static my-3">
-                    <label>Địa chỉ: </label>
-                    <input type="email" class="form-control" disabled value = "{{$foundOrder -> shipping_address}}">
-                </div>
-            </div>
-            <div class = "col-md-6">
-                <div class="input-group input-group-static my-3">
-                    <label>Trạng thái:  </label>
-                    <form action="{{route('admin.orders.change_status', $foundOrder -> id)}}" method = "POST">
-                            @foreach($order_status as $key => $status)
-                                @if($key == $foundOrder -> order_status)
-                                <div class="form-check is-filled">
-                                    <input checked value = "{{$key}}" class="form-check-input" type="radio" name="status" id="customRadio1">
-                                    <label class="custom-control-label" for="customRadio1">
-                                        <span class="badge {{$status['color']}}">{{$status['title']}}</span>
-                                    </label>
-                                </div>
-                                @else
-                                <div class="form-check">
-                                    <input value = "{{$key}}" class="form-check-input" type="radio" name="status" id="customRadio1">
-                                    <label class="custom-control-label" for="customRadio1">
-                                        <span class="badge {{$status['color']}}">{{$status['title']}}</span>
-                                    </label>
-                                </div>
-                                @endif
-                            @endforeach
-                            <button class = "btn btn-info btn-sm mt-2">Update Status</button>
-                            @csrf
-                            @method('PUT')
-                            
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-12">
-          <div class="card my-4">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                <h6 class="text-white text-capitalize ps-3">Danh sách sản phẩm</h6>
-              </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Sách</th>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Giá</th>
-                      <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Số lượng</th>
-                      <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Thành tiền</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($products as $product) 
-                        <tr>
-                        <td>
-                            <div class="d-flex px-2 py-1">
-                            <div>
-                                <img src="{{$product -> IMAGE}}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+<div class="row">
+    <div class="col-12">
+        <div class="card m-b-20">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice-title">
+                            <h4 class="pull-right font-16"><strong>Order # {{$foundOrder -> id}}</strong></h4>
+                            <h3 class="m-t-0">
+                                <img src="{{asset('assets/images/logo.png')}}" alt="logo" height="26"/>
+                            </h3>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-6">
+                                <address>
+                                    <strong>Billed To:</strong><br>
+                                    John Smith<br>
+                                    1234 Main<br>
+                                    Apt. 4B<br>
+                                    Springfield, ST 54321
+                                </address>
                             </div>
-                            <div class="d-flex flex-column justify-content-center">
-                                <h6 class="mb-0 text-sm">{{$product -> TITLE}}</h6>
+                            <div class="col-6 text-right">
+                                <address>
+                                    <strong>Shipped To:</strong><br>
+                                    {{$foundOrder -> shipping_address}}
+                                </address>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 m-t-30">
+                                <address>
+                                    <strong>Payment Method:</strong><br>
+                                    {{$foundOrder -> payment_method}}
+                                </address>
                             </div>
-                        </td>
-                        <td>
-                            <p class="text-xs font-weight-bold mb-0">{{$product -> order_item_price}}đ</p>
-                            
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                            <span class="badge badge-sm bg-gradient-success">{{$product -> quantity}}</span>
-                        </td>
-                        <td class="align-middle text-center">
-                            <span class="text-secondary text-xs font-weight-bold">{{$product -> quantity * $product -> order_item_price}}</span>
-                        </td>
+                            <div class="col-6 m-t-30 text-right">
+                                <address>
+                                    <strong>Order Date:</strong><br>
+                                    {{date_format(date_create($foundOrder -> created_at), 'd/m/Y')}}<br><br>
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                        </tr>
-                    @endforeach
-                  </tbody> 
-                  <tfoot>
-                        <tr>
-                            <td class=" text-center" colspan = "3">
-                                <span class="text-secondary text-xs font-weight-bold">Tổng Cộng</span>
-                            </td>
-                            <td class=" text-center">
-                                <span class="text-secondary text-xss">{{$foundOrder -> total_order_value}}</span>
-                            </td>
-                        </tr>
-                  </tfoot>
-                </table>
-              </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="panel panel-default">
+                            <div class="p-2">
+                                <h3 class="panel-title font-20"><strong>Order summary</strong></h3>
+                            </div>
+                            <div class="">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <td><strong>ID</strong></td>
+                                            <td><strong>Title</strong></td>
+                                            <td class="text-center"><strong>Price</strong></td>
+                                            <td class="text-center"><strong>Quantity</strong>
+                                            </td>
+                                            <td class="text-right"><strong>Totals</strong></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!-- foreach ($order->lineItems as $line) or some such thing here -->
+                                        @foreach($products as $product)
+                                            <tr>
+                                                <td>{{$product -> id}}</td>
+                                                <td>{{$product -> TITLE}}</td>
+                                                <td class="text-center">{{$product -> item_price}}</td>
+                                                <td class="text-center">{{$product -> quantity}}</td>
+                                                <td class="text-right">{{($product -> item_price) * ($product -> quantity)}}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="d-print-none">
+                                    <div class="pull-right">
+                                        <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light"><i class="fa fa-print"></i></a>
+                                        <a href="#" class="btn btn-primary waves-effect waves-light">Send</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div> <!-- end row -->
+
             </div>
-          </div>
         </div>
-      </div>
-    </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
 @endsection

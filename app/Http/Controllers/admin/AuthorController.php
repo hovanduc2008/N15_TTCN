@@ -41,18 +41,11 @@ class AuthorController extends Controller
             'name' => 'required'
         ]);
 
-        if ($request -> hasFile('upload')) {
-            $request -> merge([
-                'image' => $img -> upload($request)
-            ]); 
-        }
-
-        $data = [
+        $request -> merge($img -> upload($request)); 
+        $data = $request -> merge([
             'added_by' => auth('web') -> id(),
-            'name' => $request -> name,
-            'biography' => $request -> biography,
-            'image' => $request -> image ?? ''
-        ];
+        ]) -> all();
+
 
         $this -> authorRepository -> create($data);
 
@@ -78,29 +71,36 @@ class AuthorController extends Controller
             ]);
         }
 
-        if(isset($request -> is_active)) {  
-            $request -> merge([
-                'status' => 1
-            ]);
-            
-        }else {
-            $request -> merge([
-                'status' => 0
-            ]);
-        }
+        // if(isset($request -> is_active)) {  
+        //     $request -> merge([
+        //         'status' => 1
+        //     ]);
+        // }else {
+        //     $request -> merge([
+        //         'status' => 0
+        //     ]);
+        // }
 
-        if($request -> hasFile('upload')) {
+        $hasFileImage = $request -> hasFile('upload_image');
+        $hasFileThumbnail = $request -> hasFile('upload_thumbnail');
+
+        if($hasFileImage || isset($request -> is_delete)) {
             $img -> remove($foundAuthor -> image);
+        }
+        if($hasFileThumbnail) {
+            $img -> remove($foundAuthor -> thumbnail);   
+        }
+        $request -> merge($img -> upload($request));
+
+        if(isset($request -> is_delete)) {
             $request -> merge([
-                'image' => $img -> upload($request)
+                'image' => '',
             ]);
         }
-
-        
 
         $this -> authorRepository -> update($request -> all(), $foundAuthor -> id);
 
-        return redirect() -> route('admin.authors') -> with('success', 'Updated author');
+        return redirect() -> route('admin.author.edit', $foundAuthor -> id) -> with('success', 'Updated author');
 
     }
 

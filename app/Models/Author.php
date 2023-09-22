@@ -14,6 +14,13 @@ class Author extends Model
         'name',
         'biography',
         'image',
-        'status'
+        'thumbnail',
+        'status',
+        'email',
+        'phone_number',
+        'address',
+        'gender',
+        'date_of_birth',
+        'deleted_at',
     ];
 }

@@ -1,76 +1,77 @@
-@php
+l@php
     use Illuminate\Support\Str;
     $menus = [
         [
             "title" => "Dashboard",
-            "icon" => "dashboard",
             "route" => route('admin.dashboard'),
         ],
         [
             "title" => "Tác giả",
-            "icon" => "face",
-            "route" => route('admin.authors'),
+            "subroute" => [
+                [
+                    "title" => "Danh sách tác giả",
+                    "route" => route('admin.authors')
+                ],
+                [
+                    "title" => "Thêm tác giả",
+                    "route" => route('admin.author.create'),
+                ],
+                
+            ]
         ],
         [
             "title" => "Danh mục",
-            "icon" => "category",
-            "route" => route('admin.categories'),
+            "subroute" => [
+                [
+                    "title" => "Danh sách danh mục",
+                    "route" => route('admin.categories')
+                ],
+                [
+                    "title" => "Thêm danh mục",
+                    "route" => route('admin.category.create'),
+                ],
+                
+            ]
         ],
         [
             "title" => "Sản phẩm",
-            "icon" => "book",
-            "route" => route('admin.products'),
+            "subroute" => [
+                [
+                    "title" => "Danh sách sản phẩm",
+                    "route" => route('admin.products'),
+                ],
+                [
+                    "title" => "Thêm sản phẩm",
+                    "route" => route('admin.product.create'),
+                ]
+            ]
         ],
         [
             "title" => "Đơn hàng",
-            "icon" => "list_alt",
             "route" => route('admin.orders'),
         ],
     ];
 
-    
-    $current_url = request()->url();
+    function renderMenu($menus) {
+        foreach($menus as $menu){
+            if(isset($menu['subroute'])){
+                echo "<li  class='has_sub'>
+                    <a href='javascript:void(0);' class='waves-effect'><i class='mdi mdi-email-outline'></i><span> ".$menu['title']." <span class='pull-right'><i class='mdi mdi-chevron-right'></i></span> </span></a>";
+                echo "<ul class='list-unstyled'>";
+                   
+                    renderMenu($menu['subroute']);
+                echo "</ul> </li>";
+            }    
+            else{
+                echo "<li><a href='" .$menu["route"]. "' class='waves-effect'><i class='mdi mdi-cube-outline'></i><span>". $menu['title']." </span></a></li>";
+            }     
+        }
+    }
 @endphp
 
-        <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
-            <div class="sidenav-header">
-                <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-                <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
-                    <img src="{{asset('assets/img/logo-ct.png')}}" class="navbar-brand-img h-100" alt="main_logo">
-                    <span class="ms-1 font-weight-bold text-white">Material Dashboard 2</span>
-                </a>
-            </div>
-            <hr class="horizontal light mt-0 mb-2">
-            <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
-                <ul class="navbar-nav">
-                    @foreach($menus as $menu)
-                        @if(Str::startsWith($current_url, $menu['route']))
-                            <li class="nav-item">
-                                <a class="nav-link text-white active bg-gradient-primary" href="{{$menu['route']}}">
-                                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="material-icons opacity-10">{{$menu['icon']}}</i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{$menu['title']}}</span>
-                                </a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{{$menu['route']}}">
-                                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="material-icons opacity-10">{{$menu['icon']}}</i>
-                                    </div>
-                                    <span class="nav-link-text ms-1">{{$menu['title']}}</span>
-                                </a>
-                            </li>
-                        @endif
-                        
-                    @endforeach
-                </ul>
-            </div>
-            <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-                <div class="mx-3">
-                    <!-- <a class="btn bg-gradient-primary mt-4 w-100" href="https://www.creative-tim.com/product/material-dashboard-pro?ref=sidebarfree" type="button">Upgrade to pro</a> -->
-                </div>
-            </div>
-        </aside>
+    <div id="sidebar-menu">
+        <ul>
+            {{renderMenu($menus)}}
+        </ul>
+    </div>
 

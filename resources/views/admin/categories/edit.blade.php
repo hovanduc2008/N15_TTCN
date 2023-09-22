@@ -6,71 +6,104 @@
 @endphp
 
 @section('main')
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-20">
+                <div class="card-body">
+                    <form action = "{{route('admin.category.handleEdit', $foundCategory -> id)}}" method = "POST" enctype = "multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="meta_title">Category ID</label>
+                                    <input id="meta_title" disabled  name="meta_title" value = "{{$foundCategory -> id}}" type="text" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="title">Category Title</label>
+                                    <input id="title" name="title" value = "{{$foundCategory -> title}}" type="text" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="content">Content</label>
+                                    <textarea class="form-control" name = "content" id="content" rows="5">{{$foundCategory -> content}}</textarea>
+                                </div>
+                            </div>
 
-    <div class="p-3" >
-        <form action="" method="post" enctype = "multipart/form-data">
-            <div class="input-group input-group-static mb-4">
-                <label>Mã danh mục</label>
-                <input type="text" disabled  class="form-control" value = "{{$foundCategory -> id}}">
+                            <div class="col-sm-6">
+                                
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea name = "description" class="form-control" id="description" rows="5">{{$foundCategory -> description}}</textarea>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                
+                            </div>
+                            <div class="col-sm-6">
+                                
+                                <div class="form-group">
+                                    <label>Product Image</label> <br/>
+                                    <img src="{{$foundCategory -> image}}" alt="product img" class="img-fluid" style="max-width: 200px;" />
+                                    <br/>
+                                    <input type="file" name = "upload_image" class="btn btn-purple m-t-10 waves-effect waves-light" />
+                                </div>
+                            </div>
+                        </div>
+
+                        @csrf
+                        @method('PUT')
+
+                        <button type="submit" class="btn btn-success waves-effect waves-light">Save Changes</button>
+                        <button type="submit" class="btn btn-secondary waves-effect">Cancel</button>
+                    </form>
+
+                </div>
             </div>
-            <div class="input-group input-group-static mb-4">
-                <label>Tên danh mục</label>
-                <input type="text" class="form-control" name = "title" value = "{{$foundCategory -> title}}">
+
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Meta Data</h4>
+                    <p class="text-muted m-b-30 font-14">Fill all information below</p>
+
+                    <form action = "{{route('admin.category.handleEdit', $foundCategory -> id)}}" method = "POST">
+                        <input type="hidden" name="title" value = "{{$foundCategory -> title}}">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="meta_title">Meta title</label>
+                                    <input id="meta_title" name="meta_title" value = "{{$foundCategory -> meta_title}}" type="text" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="meta_keywords">Meta Keywords</label>
+                                    <input id="meta_keywords" name="metakeywords" type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="meta_description">Meta Description</label>
+                                    <textarea class="form-control" id="meta_description" name = "meta_description"  rows="5">{{$foundCategory -> meta_description}}</textarea>
+                                </div>
+                            </div>
+                            
+                        </div>
+                            <button type="submit" class="btn btn-success waves-effect waves-light">Save Changes</button>
+                            <button type="submit" class="btn btn-secondary waves-effect">Cancel</button>
+                        @csrf
+                        @method('PUT')
+                    </form>
+                </div>
             </div>
-            <div>
-                <label for="">Trạng thái</label>
-                @if($foundCategory -> status == 1) 
-                    <input checked type="checkbox" name = "is_active"> 
-                @else
-                    <input type="checkbox" name = "is_active">
-                @endif
-            </div>
-            <div class = "mt-4">
-                <label for="">Hình ảnh: </label>
-                <img src="{{$foundCategory -> image}}" alt="">
-            </div>
-            <div class = "mt-4">
-                <label for="">Xóa Hình ảnh: </label>
-                <input type="checkbox" name="is_delete">
-            </div>
-            <div class = "mt-4">
-                <label for="">Thay đổi Hình ảnh</label>
-                <input type="file" class="form-control" name="upload">
-            </div>
-            <div class = "d-flex justify-content-sm-end mt-3">
-                <a href="{{route('admin.categories')}}" class = "btn btn-outline-secondary mx-sm-2">Quay lại</a>
-                <button type="button" 
-                onclick = "renderModal('{{route('admin.category.delete', $foundCategory -> id)}}')" 
-                class="btn me-2 bg-gradient-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Xóa Danh Mục
-                </button>
-                <button type = "submit" class = "btn btn-info">Update</button>
-            </div>
-            @csrf
-            @method('PUT')
-        </form>
+        </div>
     </div>
 @endsection
 
 
 @section('scripts')
-    <script>
-        var $ = document.querySelector.bind(document);
-        function renderModal (route) {
-            
-            $('.modal-title').innerHTML = 'Xác nhận xóa danh mục';
-            $('.modal-body').innerHTML = 'Các sách thuộc danh mục này sẽ bị xóa và không thể khôi phục!';
-            var btnSubmit = `
-                <form action = "${route}" method='post'>
-                    @csrf
-                    @method('DELETE')
-                    <button type='submit' class = "btn btn-danger" name=''>Xác nhận xóa</button>
-                </form>
-            `
-            $('.modal-footer').innerHTML = btnSubmit;
-        }
-    </script>
-
+   
 @endsection
 
 

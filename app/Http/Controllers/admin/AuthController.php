@@ -24,12 +24,16 @@ class AuthController extends Controller
     }
 
     public function handleRegister(Request $request) {
-        $request->validate([
+
+      
+        $validator = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
             'password_confirmation' => 'same:password|min:6'
-        ]);
+        ]
+    );
+
         
         $user = User::create([
             'name' => $request->name,
@@ -37,8 +41,13 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             
         ]);
+        $notify = "
+            Tạo tài khoản thành công
+            <p style = 'margin: 0'>Email: ".$request -> email."</p>
+            <p style = 'margin: 0'>Password: ".$request -> password."</p>
+        ";
 
-        return redirect(route('admin.login'));
+        return redirect(route('admin.login')) -> with('success', $notify);
 
     }
 

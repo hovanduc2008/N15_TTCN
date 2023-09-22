@@ -18,8 +18,15 @@ class CreateAuthorsTable extends Migration
             $table -> unsignedBigInteger('added_by');
             $table -> string('name');
             $table -> text('biography') -> nullable();
-            $table -> string('image') -> nullable;
+            $table -> string('email') -> nullable();
+            $table -> string('phone_number') -> nullable();
+            $table -> string('address') -> nullable();
+            $table -> enum('gender', ['male', 'female']) -> nullable();
+            $table -> date('date_of_birth') -> nullable();
+            $table -> string('image') -> default('');
+            $table->string('thumbnail');
             $table->enum('status', [0, 1]) -> default(1);
+            $table->datetime('deleted_at') -> nullable();
             $table->timestamps();
 
             $table->foreign('added_by')->references('id')->on('users');

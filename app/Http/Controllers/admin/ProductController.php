@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use App\Repositories\Eloquent\ProductEloquentRepository;
 use App\Repositories\Eloquent\CategoryEloquentRepository;
@@ -49,28 +50,21 @@ class ProductController extends Controller
     public function handleCreate(Request $request,ImageController $img) {
         $validated = $request -> validate([
             'title' => 'required',
-            'price' => 'required|integer|min:5',
+            'price' => 'required|integer',
         ]);
 
-        if($request -> hasFile('upload')) {
-            $request -> merge([
-                'image' => $img -> upload($request)
-            ]);  
-        }
+        $request -> merge($img -> upload($request));
 
-        $data = [
-            'ISBN' => $request -> ISBN,
-            'added_by' => auth('web') -> id(),
-            'title' => $request -> title,
-            'slug' => $request -> title,
-            'image' => $request -> image ?? '',
-            'price' => $request -> price,
-            'quantity' => $request -> quantity,
-            'description' => $request -> description,
-            'category_id' => $request -> category,
-            'author_id' => $request -> author,
-            'publication_date' => $request -> publication_date,
-        ];
+        $data = $request -> merge(
+            [
+                'added_by' => auth('web') -> id(),
+                'slug' => Str::slug($request -> title),
+                'category_id' => $request -> category,
+                'author_id' => $request -> author
+            ]
+        ) -> all();
+
+       
 
         $this -> productRepository -> create($data);
 
@@ -86,9 +80,10 @@ class ProductController extends Controller
     }
 
     public function handleEdit(Request $request, ImageController $img) {
+        
         $validated = $request -> validate([
             'title' => 'required',
-            'price' => 'required|integer|min:5',
+            'price' => 'required|integer'
         ]);
 
         $foundProduct = $this -> productRepository -> findById($request -> id);
@@ -98,35 +93,36 @@ class ProductController extends Controller
             'category_id' => $request -> category,
         ]);
 
+        // if(isset($request -> is_active)) {  
+        //     $request -> merge([
+        //         'status' => 1
+        //     ]); 
+        // }else {
+        //     $request -> merge([
+        //         'status' => 0
+        //     ]);
+        // }
+
+        $hasFileImage = $request -> hasFile('upload_image');
+        $hasFileThumbnail = $request -> hasFile('upload_thumbnail');
+
+        if($hasFileImage || isset($request -> is_delete)) {
+            $img -> remove($foundProduct -> image);
+        }
+        if($hasFileThumbnail) {
+            $img -> remove($foundProduct -> thumbnail);   
+        }
+        $request -> merge($img -> upload($request));
 
         if(isset($request -> is_delete)) {
-            $img -> remove($foundProduct -> image);
             $request -> merge([
-                'image' => ''
-            ]);
-        }
-
-        if(isset($request -> is_active)) {  
-            $request -> merge([
-                'status' => 1
-            ]);
-            
-        }else {
-            $request -> merge([
-                'status' => 0
-            ]);
-        }
-
-        if($request -> hasFile('upload')) {
-            $img -> remove($foundProduct -> image);
-            $request -> merge([
-                'image' => $img -> upload($request)
+                'image' => '',
             ]);
         }
 
         $this -> productRepository ->update($request -> all(), $foundProduct -> id);
 
-        return redirect() -> route('admin.products') -> with('success', 'Updated product');
+        return redirect() -> route('admin.product.edit', $foundProduct -> id) -> with('success', 'Updated product');
     }
 
     public function handleDelete(Request $request, ImageController $img) {

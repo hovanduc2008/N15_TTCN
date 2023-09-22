@@ -22,170 +22,63 @@
 @endphp
 
 @section('main')
-    <form action="" method = "GET">
-        <div class="d-flex justify-content-bettwen align-items-sm-center">
-            <div style = "min-width: 205px" class = "me-2">
-                <div class="input-group input-group-static mb-4">
-                    <label>Giá từ:</label>
-                    <input class = "form-control" type="number" value = "{{$old_filters['price_start'] ?? ''}}" name = "price_start" placeholder = "Start...">
-                </div>
-                <div class="input-group input-group-static mb-4">
-                    <label>Đến:</label>
-                    <input class = "form-control" type="number" value = "{{$old_filters['price_end'] ?? ''}}" name = "price_end" placeholder = "End...">
-                </div>
-            </div>
-            <div class="input-group input-group-static mb-4">
-                <label for="sort_filter">Sắp xếp theo</label>
-                <select class = "form-control" name="sort_filter" id = "sort_filter">
-                    @foreach($sort_option as $key => $value)
-                        @if(isset($old_filters['sort_filter']))
-                            @if($key == $old_filters['sort_filter'])
-                                <option selected value="{{$key}}">{{$value}}</option>
-                            @else
-                                <option value="{{$key}}">{{$value}}</option>
-                            @endif
-                        @else
-                            <option value="{{$key}}">{{$value}}</option>
-                        @endif
-                        
-                    @endforeach
-                </select>
-            </div>
-            <div class="input-group input-group-static mb-4">
-                <label for="status_filter">Trạng Thái </label>
-                <select class = "form-control" name="status_filter" id = "status_filter">
-                    @foreach($status_option as $key => $value)
-                        @if(isset($old_filters['status_filter']))
-                            @if($key == $old_filters['status_filter'])
-                                <option selected value="{{$key}}">{{$value}}</option>
-                            @else
-                                <option value="{{$key}}">{{$value}}</option>
-                            @endif
-                        @else
-                            <option value="{{$key}}">{{$value}}</option>
-                        @endif
-                    @endforeach
-                </select>
-            </div>
-            <div class = "input-group input-group-static mb-4">
-                <label for="keyword">Từ khóa</label>
-                <input class = "form-control" type="text" value = "{{$old_filters['keyword'] ?? ''}}" placeholder = "Từ khóa..." name = "keyword" id = "keyword">
-            </div>
-            <div class="">
-                <button class = "btn btn-sm btn-success mx-2">
-                    <span class="material-icons opacity-10">
-                        filter_alt
-                    </span>
-                </button>
-                <a href="{{route('admin.authors')}}" class = "btn btn-sm btn-outline-secondary mx-2">
-                    <span class="material-icons opacity-10">
-                        clear_all
-                    </span>
-                </a>
-            </div>
-        
-        </div>
-    </form>
-    <a href="{{route('admin.product.create')}}" class = "btn btn-info">Thêm Sản Phẩm</a>
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table align-items-center mb-0">
-            <thead>
-                <tr>
-                <td class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
-                    <div class="d-flex px-3 py-1">
-                        ID
-                    </div>
-                </td>
-                <td class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
-                    <div class="d-flex px-3 py-1">
-                        Sách
-                    </div>
-                </td>
-                <td class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
-                    <div class="d-flex px-1 py-1">
-                        Ngày xuất bản
-                    </div>
-                </td>
-                <td class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
-                    <div class="d-flex px-2 py-1">
-                        Giá
-                    </div>
-                </td>
-                <td class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
-                    <div class="d-flex px-1 py-1">
-                        Số lượng
-                    </div>
-                </td>
-                <!-- <td class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Function</td> -->
-                <td class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Trạng thái</td>
-                <!-- <td class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Employed</td> -->
-                <td class="text-secondary opacity-7"></td>
-                </tr>
-            </thead>
-            <tbody>
-                @if(count($products) > 0)
-                    @foreach($products as $product)
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatable" class="table table-striped dt-responsive nowrap table-vertical" width="100%" cellspacing="0">
+                    <thead>
                         <tr>
-                            <td>
-                                <div class="d-flex px-3 py-1">
-                                    <h6 class="text-uppercase text-secondary ">{{$product -> id}}</h6>
-                                </div>
-                            </td>
-                            <td>
-                                
-                                <div class="d-flex px-2 py-1">
-                                    <div>
-                                        <img src="{{$product -> image}}" class="avatar avatar-md me-3 border-radius-sm">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="mb-0 text-xl">{{$product -> title}}</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="text-xl font-weight-normal mb-0">{{date_format(date_create($product->publication_date), 'd-m-Y')}}</p>
-                            </td>
-                            <td>
-                                <div class="d-flex px-1 py-1">
-                                <p class="text-xl font-weight-normal mb-0">{{number_format($product -> price)}}đ</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex px-1 py-1">
-                                <p class="text-xl font-weight-normal mb-0">{{number_format($product -> quantity)}}</p>
-                                </div>
-                            </td>
-                            
-
-                            <!-- <td>
-                                <p class="text-xs font-weight-bold mb-0">Manager</p>
-                                <p class="text-xs text-secondary mb-0">Organization</p>
-                            </td> -->
-                            <td class="align-middle text-center text-sm">
-                                    @if($product -> status == 1)
-                                        <span class="badge bg-gradient-success">Enable</span>
-                                    @else
-                                        <span class="badge bg-gradient-danger">Disable</span>
-                                    @endif
-                            </td>
-                            
-                            <td class="align-middle">
-                                <a href="{{route('admin.product.edit', $product -> id)}}" class="text-secondary font-weight-normal text-xs" data-toggle="tooltip" >
-                                    Edit
-                                </a>
-                            </td>
+                            <th>Image</th>
+                            <th>Category Name</th>
+                            <th>Added Date</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Action</th>
                         </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan = "4">
-                            <span class="badge bg-gradient-danger">Không tìm thấy sản phẩm</span>
-                        </td>
-                    </tr>
-                @endif
-            </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($products as $product)
+                            <tr>
+                                <td class="product-list-img">
+                                    <img src="{{$product -> thumbnail}}" class="img-fluid" alt="tbl">
+                                </td>
+                                <td>
+                                    <h6 class="mt-0 m-b-5">{{$product -> title}}</h6>
+                                    <p class="m-0 font-14">{{$product -> description}}</p>
+                                </td>
+                                
+                                <td>{{date_format(date_create($product -> created_at), 'd/m/Y H:m:s')}}</td>
+                                <td>{{number_format($product -> quantity)}}</td>
+                                <td>{{number_format($product -> price)}}đ</td>
+                            
+                                <td>
+                                    <a href="{{route('admin.product.edit', $product -> id)}}" class="m-r-15 text-muted" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="mdi mdi-pencil font-18"></i></a>
+                                    <button class = "btn-danger" data-toggle="modal" data-target=".bs-delete-modal-sm" onclick = "modalConfirmDelete('Xác nhận xóa sản phẩm', 'Sản phẩm này sẽ bị xóa và không thể khôi phục', '{{route('admin.product.delete', $product -> id)}})')" class="text-muted" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="mdi mdi-close font-18"></i></button>
+                                </td>
+                            </tr>
+                        @endforeach
+                        
+                    </tbody>
+                </table>
+
+            </div>
         </div>
     </div>
+</div>
+@endsection
+
+@section('scripts')
+    <!-- Datatable js -->
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <!-- Responsive examples -->
+    <script src="{{asset('plugins/datatables/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/responsive.bootstrap4.min.js')}}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#datatable').DataTable();
+        });
+    </script>
 @endsection

@@ -14,7 +14,15 @@ class Category extends Model
         'title',
         'slug',
         'image',
-        'status'
+        'thumbnail',
+        'status',
+        'content',
+        'parent_id',
+        'meta_title',
+        'description',
+        'meta_description',
+        'parent_id',
+        'deleted_at'
     ];
 
     

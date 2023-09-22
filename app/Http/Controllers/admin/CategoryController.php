@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use App\Http\Controllers\ImageController;
 
@@ -37,30 +38,26 @@ class CategoryController extends Controller
         return view('admin.categories.create');
     }
 
+
+    // Xử lý thêm danh mục
     public function handleCreate(Request $request, ImageController $img) {
 
-        // $validated = $request -> validate([
-        //     'slug' => 'required|unique:categories',
-        // ]);
+        $validated = $request -> validate([
+            'title' => 'required'
+        ]);
 
-        if($request -> hasFile('upload')) {
-            $request -> merge([
-                'image' => $img -> upload($request)
-            ]);  
-        }
+        $request -> merge($img -> upload($request));  
 
-        $data = [
-            'added_by' => auth('web') -> id(),
-            'title' => $request -> title,
-            'slug' => $request -> title,
-            'image' => $request -> image ?? ''
-        ];
+        $data = $request -> merge(
+            [
+                'added_by' => auth('web') -> id(),
+                'slug' => Str::slug($request -> title)
+            ]
+        ) -> all();
 
         $this -> categoryRepository -> create($data);
 
-        $title = $request -> title;
-
-        return redirect() -> route('admin.categories') -> with(['success' => "Thêm thành công danh mục: $title!"]);
+        return redirect() -> route('admin.categories') -> with(['success' => "Thêm thành công danh mục: ".$request -> title."!"]);
     }
 
     public function editForm(Request $request) {
@@ -68,6 +65,7 @@ class CategoryController extends Controller
         return view('admin.categories.edit', compact('foundCategory'));
     }
 
+    // Xử lý sửa danh mục
     public function handleEdit(Request $request, ImageController $img) {
         $validator = $request -> validate([
             'title' => 'required',
@@ -75,36 +73,37 @@ class CategoryController extends Controller
 
         $foundCategory = $this -> categoryRepository -> findById($request -> id);
 
+
+        // if(isset($request -> is_active)) {  
+        //     $request -> merge([
+        //         'status' => "1"
+        //     ]);     
+        // }else {
+        //     $request -> merge([
+        //         'status' => "0"
+        //     ]);
+        // }
+
+        $hasFileImage = $request -> hasFile('upload_image');
+        $hasFileThumbnail = $request -> hasFile('upload_thumbnail');
+
+        if($hasFileImage || isset($request -> is_delete)) {
+            $img -> remove($foundCategory -> image);
+        }
+        if($hasFileThumbnail) {
+            $img -> remove($foundCategory -> thumbnail);   
+        }
+        $request -> merge($img -> upload($request));
+
         if(isset($request -> is_delete)) {
-            $img -> remove($foundCategory -> image);
             $request -> merge([
-                'image' => ''
-            ]);
-        }
-
-        
-
-        if(isset($request -> is_active)) {  
-            $request -> merge([
-                'status' => 1
-            ]);
-            
-        }else {
-            $request -> merge([
-                'status' => 0
-            ]);
-        }
-
-        if($request -> hasFile('upload')) {
-            $img -> remove($foundCategory -> image);
-            $request -> merge([
-                'image' => $img -> upload($request)
+                'image' => '',
             ]);
         }
 
         $this -> categoryRepository -> update($request -> all(), $foundCategory -> id);
 
-        return redirect() -> route('admin.categories') -> with('success', 'Updated Category');
+        return redirect() -> route('admin.category.edit', $foundCategory -> id) -> with('success', 'Updated Category');
     }
 
     public function handleDelete(Request $request, ImageController $img) {
