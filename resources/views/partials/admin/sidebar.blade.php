@@ -6,6 +6,10 @@ l@php
             "route" => route('admin.dashboard'),
         ],
         [
+            "title" => "Khách hàng",
+            "route" => route('admin.customers')
+        ],
+        [
             "title" => "Tác giả",
             "subroute" => [
                 [
@@ -37,8 +41,12 @@ l@php
             "title" => "Sản phẩm",
             "subroute" => [
                 [
-                    "title" => "Danh sách sản phẩm",
+                    "title" => "Danh sách bán",
                     "route" => route('admin.products'),
+                ],
+                [
+                    "title" => "Danh sách cho mượn",
+                    "route" => route('admin.product.borrowproducts'),
                 ],
                 [
                     "title" => "Thêm sản phẩm",
@@ -48,7 +56,24 @@ l@php
         ],
         [
             "title" => "Đơn hàng",
-            "route" => route('admin.orders'),
+            "subroute" => [
+                [
+                    "title" => "Đơn bán",
+                    "route" => route('admin.orders'),
+                ],
+                [
+                    "title" => "Đơn mượn",
+                    "route" => route('admin.borrows')
+                ],
+                [
+                    "title" => "Tạo đơn mượn",
+                    "route" => route('admin.borrow.create')
+                ],
+                [
+                    "title" => "Thống kê",
+                    "route" => route('admin.statistics')
+                ]
+            ]
         ],
     ];
 

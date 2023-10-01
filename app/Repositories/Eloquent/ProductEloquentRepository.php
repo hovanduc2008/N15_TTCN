@@ -58,4 +58,17 @@ class ProductEloquentRepository extends BaseEloquentRepository {
     
         return $query->get();
     }
+
+    public function topProducts()
+    {
+        $query = $this->model
+            ->select('products.id', 'products.title', \DB::raw('COUNT(borrows.id) as borrow_count'))
+            ->leftJoin('borrows', 'products.id', '=', 'borrows.product_id')
+            ->groupBy('products.id', 'products.title') 
+            ->orderBy('borrow_count', 'desc')
+            ->take(5)
+            ->get();
+
+        return $query;
+    }
 }

@@ -44,11 +44,13 @@
         <link href="{{asset('assets/css/icons.css')}}" rel="stylesheet" type="text/css">
         <link href="{{asset('assets/css/style.css')}}" rel="stylesheet" type="text/css">
 
+        <!-- Alertify css -->
+        <link href="{{asset('plugins/alertify/css/alertify.css')}}" rel="stylesheet" type="text/css">
+
     </head>
 
 
     <body class="fixed-left">
-
         <!-- Loader -->
         <div id="preloader"><div id="status"><div class="spinner"></div></div></div>
 
@@ -140,8 +142,54 @@
         <!-- Jquery-Ui -->
         <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
         <script src="{{asset('plugins/moment/moment.js')}}"></script>
+
+        <!-- Alertify js -->
+        <script src="{{asset('plugins/alertify/js/alertify.js')}}"></script>
+        <script src="{{asset('assets/pages/alertify-init.js')}}"></script>
+
+        
+
         <!-- App js -->
         <script src="{{asset('assets/js/app.js')}}"></script>
+
+        <!-- Parsley js -->
+        <script type="text/javascript" src="{{asset('plugins/parsleyjs/parsley.min.js')}}"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('form').parsley();
+            });
+        </script>
+
+        
+
+        <div class="alertify-logs" style = "z-index: 10000">
+            @if(session('success'))
+                <div class="alert success alert-dismissible fade show mb-0" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Success!</strong> {{session('success')}}
+                </div>
+            @elseif(session('error'))
+                <div class="alert error alert-dismissible fade show mb-0" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Oh Snap!</strong> {{session('error')}}
+                </div>
+            @elseif($errors -> any() > 0)
+                @foreach($errors -> all() as $error)
+                    <div class="alert error alert-dismissible fade show mb-0" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Oh Snap!</strong> {{$error}}
+                    </div>
+                @endforeach
+            @endif
+        </div>
+        
         <script>
             const $d = document.querySelector.bind(document);
             const $dd = document.querySelectorAll.bind(document);
@@ -152,6 +200,8 @@
                 $d('#modal_confirm-action').action = route;
             }
         </script>
+
+        
         @yield('scripts')
 
     </body>

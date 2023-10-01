@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 use App\Repositories\Eloquent\OrderEloquentRepository;
 use App\Repositories\Eloquent\OrderDetailEloquentRepository;
+use App\Repositories\Eloquent\CustomerEloquentRepository;
+use App\Repositories\Eloquent\BorrowEloquentRepository;
+use App\Repositories\Eloquent\ProductEloquentRepository;
 
 use App\Models\OrderDetail;
 
@@ -14,13 +17,21 @@ class OrderController extends Controller
 {
     protected $orderRepository;
     protected $orderDetailRepository;
+    protected $customerRepository;
+    protected $borrowRepository;
 
-    function __construct(
+    public function __construct(
         OrderEloquentRepository $orderRepository,
-        OrderDetailEloquentRepository $orderDetailRepository
+        OrderDetailEloquentRepository $orderDetailRepository,
+        CustomerEloquentRepository $customerRepository,
+        BorrowEloquentRepository $borrowRepository,
+        ProductEloquentRepository $productRepository
         ) {
         $this -> orderRepository = $orderRepository;
         $this -> orderDetailRepository = $orderDetailRepository;
+        $this -> customerRepository = $customerRepository;
+        $this -> borrowRepository = $borrowRepository;
+        $this -> productRepository = $productRepository;
     }
 
     public function index(Request $request) {
@@ -37,7 +48,7 @@ class OrderController extends Controller
         $foundOrder = $this -> orderRepository -> findById($request -> id);
         $products = $this -> orderDetailRepository -> joinFindId('order_id', '=', $foundOrder -> id, 'products', 'product_id', [
             'title',
-            'image',
+            
         ]);
         
         return view('admin.orders.detail', compact('foundOrder', 'products'));
@@ -58,6 +69,24 @@ class OrderController extends Controller
             $request -> id,
         );
         return $orders;
+    }
+
+    public function statistics(Request $request) {
+        $countCustomer = $this -> customerRepository -> countWhere(['is_admin' => '0'], ['id']);
+        $countOrder = $this -> orderRepository -> countWhere([], ['id']);
+        $countBorrow = $this -> borrowRepository -> countWhere([], ['id']);
+        $topProducts = $this -> productRepository -> topProducts();
+        $topCustomerBorrows = $this -> customerRepository -> topCustomerBorrows();
+        
+        $topLateReturners = $this -> customerRepository -> topLateReturners();
+        
+        return view('admin.orders.statistics', 
+        compact('countCustomer', 
+        'countOrder', 
+        'countBorrow', 
+        'topProducts',
+        'topCustomerBorrows', 
+        'topLateReturners'));
     }
 
 }

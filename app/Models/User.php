@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Auth\Passwords\CanResetPassword;
 
+use App\Models\Borrow;
+use App\Models\Product;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -22,6 +24,14 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'phone_number',
+        'address',
+        'gender',
+        'date_of_birth',
+        'image',
+        'thumbnail',
+        'status',
+        'is_admin'
     ];
 
     /**
@@ -62,5 +72,17 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    
+    public function borrowing() {
+        return $this->hasMany(Borrow::class, 'user_id')-> whereNull('actual_return_date');
+    }
 
+    public function borrowed() {
+        return $this->hasMany(Borrow::class, 'user_id') -> whereNotNull('actual_return_date');
+    }
+
+    public function borrows() {
+        return $this->hasMany(Borrow::class, 'user_id');
+    }
+    
 }

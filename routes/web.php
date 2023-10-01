@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\admin\AuthController;
+use App\Http\Controllers\admin\CustomerController;
+use App\Http\Controllers\admin\BorrowController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\AuthorController;
@@ -44,6 +46,26 @@ Route::prefix('/admin') -> group(function() {
     });
 
 
+
+    // Customer Route------------------------------------------------------------------------
+    Route::middleware('admin.login') -> prefix('customer') -> group(function() {
+        Route::get('/', [CustomerController:: class, 'index']) -> name('admin.customers');
+    });
+
+
+
+    // Borrow Route------------------------------------------------------------------------
+    Route::middleware('admin.login') -> prefix('borrows') -> group(function() {
+        Route::get('/', [BorrowController:: class, 'index']) -> name('admin.borrows');
+        Route::get('/create', [BorrowController::class, 'createForm']) -> name('admin.borrow.create');
+        Route::post('/create', [BorrowController::class, 'handleCreate']) -> name('admin.borrow.handleCreate');
+        Route::get('/filterbyuser/{user_id}/{type}', [BorrowController:: class, 'filterByUser']) -> name('admin.borrow.filterbyuser');
+        Route::get('/filterbyproduct/{product_id}', [BorrowController:: class, 'filterByProduct']) -> name('admin.borrow.filterbyproduct');
+    });
+
+
+
+    // Product Route------------------------------------------------------------------------
     Route::middleware('admin.login') -> prefix('product') -> group(function() {
 
         Route::get('/', [ProductController::class, 'index']) -> name('admin.products');
@@ -57,8 +79,11 @@ Route::prefix('/admin') -> group(function() {
         Route::delete('delete/{id}', [ProductController::class, 'handleDelete']) -> name('admin.product.delete');
 
         Route::get('filter', [ProductController::class, 'filterProducts']) -> name('admin.product.filter');
+        Route::get('borrowproducts', [ProductController::class, 'borrowProducts']) -> name('admin.product.borrowproducts');
     });
 
+
+    // Category Route------------------------------------------------------------------------
     Route::middleware('admin.login') -> prefix('category') -> group(function() {
 
         Route::get('/', [CategoryController::class, 'index']) -> name('admin.categories');;
@@ -72,6 +97,8 @@ Route::prefix('/admin') -> group(function() {
         Route::delete('delete/{id}', [CategoryController::class, 'handleDelete']) -> name('admin.category.delete');
     });
 
+
+    // Author Route------------------------------------------------------------------------
     Route::middleware('admin.login') -> prefix('author') -> group(function() {
 
         Route::get('/', [AuthorController::class, 'index']) -> name('admin.authors');;
@@ -85,9 +112,12 @@ Route::prefix('/admin') -> group(function() {
         Route::delete('delete/{id}', [AuthorController::class, 'handleDelete']) -> name('admin.author.delete');
     });
 
+
+    // Order Route------------------------------------------------------------------------
     Route::middleware('admin.login') -> prefix('order') -> group(function() {
 
         Route::get('/', [OrderController::class, 'index']) -> name('admin.orders');
+        Route::get('statistics', [OrderController::class, 'statistics']) -> name('admin.statistics');
 
         Route::get('/{id}', [OrderController::class, 'detail']) -> name('admin.orders.detail');
         Route::put('/change-status/{id}', [OrderController::class, 'changeStatus']) -> name('admin.orders.change_status');

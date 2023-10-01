@@ -15,11 +15,11 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="name">Author Name</label>
-                                <input id="name" name="name" type="text" class="form-control">
+                                <input id="name" name="name" type="text" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input id="email" name="email" type="text" class="form-control">
+                                <input id="email" name="email" type="email" class="form-control" parsley-type="email">
                             </div>
                         </div>
 
@@ -35,7 +35,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
-                                <input id="phone_number" name="phone_number" type="text" class="form-control">
+                                <input id="phone_number" name="phone_number" type="text" class="form-control" data-parsley-pattern="^(0|\+84)(\d{9}|\d{10})$">
                             </div>
                             <div class="form-group">
                                 <label for="address">Address</label>
@@ -44,7 +44,6 @@
                             <div class="form-group">
                                 <label class="control-label">Gender</label>
                                 <select class="form-control select2" name = "gender" required>
-                                    <option>Select</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
@@ -62,7 +61,7 @@
                                 <label>Product Image</label> <br/>
                                 <img src="assets/images/products/1.jpg" alt="product img" class="img-fluid" style="max-width: 200px;" />
                                 <br/>
-                                <input type="file" name = "upload_image" class="btn btn-purple m-t-10 waves-effect waves-light ">
+                                <input type="file" name = "upload_image" class="btn btn-purple m-t-10 waves-effect waves-light " required>
                             </div>
                         </div>
                     </div>

@@ -25,12 +25,12 @@
                 <table id="datatable" class="table table-striped dt-responsive nowrap table-vertical" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Author Name</th>
-                            <th>Gender</th>
+                            <th>Họ tên</th>
+                            <th>Giới tính</th>
                             <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Address</th>
-                            <th>Date of Birth</th>
+                            <th>Điện thoại</th>
+                            <th>Địa chỉ</th>
+                            <th>Ngày sinh</th>
                             <th>Action</th>
                         </tr>
                     </thead>

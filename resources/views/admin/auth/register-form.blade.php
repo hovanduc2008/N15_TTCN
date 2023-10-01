@@ -12,23 +12,23 @@
     <form class="form-horizontal m-t-30" action="{{route('admin.handleRegister')}}" method = "POST">
         <div class="form-group">
             <label for="username">Full Name</label>
-            <input type="text" class="form-control" name = "name"  id="fullname" placeholder="Enter Full Name">
+            <input type="text" class="form-control" name = "name"  id="fullname" placeholder="Enter Full Name" required>
         </div>
 
         <div class="form-group">
             <label for="useremail">Email</label>
-            <input type="email" class="form-control" name = "email" id="useremail" placeholder="Enter email">
+            <input type="email" class="form-control" name = "email" id="useremail" placeholder="Enter email" parsley-type="email" required>
         </div>
 
 
         <div class="form-group">
             <label for="userpassword">Password</label>
-            <input type="password" class="form-control" name = "password" id="userpassword" placeholder="Enter password">
+            <input type="password" class="form-control" name = "password" id="userpassword" placeholder="Enter password" required>
         </div>
 
         <div class="form-group">
             <label for="userpassword">Password Confirmation</label>
-            <input type="password" class="form-control" id="password_comfirmation" placeholder="Enter password">
+            <input type="password" class="form-control" data-parsley-equalto="#userpassword" id="password_comfirmation" required placeholder="Enter password">
         </div>
 
         <div class="form-group row m-t-20">

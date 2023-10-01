@@ -34,7 +34,7 @@ class ProductController extends Controller
         if(count($request -> all()) > 0) {
             $products = $this -> filterProducts($request);
         }else {
-            $products = $this -> productRepository -> all(); 
+            $products = $this -> productRepository -> findWhere(["type" => "0"]); 
         }
         $old_filters = $request -> all();
         return view('admin.products.index', compact('products', 'old_filters'));
@@ -133,6 +133,11 @@ class ProductController extends Controller
         $this -> productRepository -> delete($id);
         
         return redirect() -> route('admin.products') -> with('success', 'Xóa thành công product');
+    }
+
+    public function borrowProducts() {
+        $products = $this -> productRepository -> findWhere(['type'=> '1']);
+        return view('admin.products.borrowproducts', compact('products'));
     }
 
     public function filterProducts(Request $request) {

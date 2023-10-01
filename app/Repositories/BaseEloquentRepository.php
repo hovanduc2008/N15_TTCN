@@ -158,6 +158,23 @@ abstract class BaseEloquentRepository
         return $results;
     }
 
+    public function countWhere(array $where, $columns = array('*'))
+    {
+        foreach ($where as $field => $value) {
+            if (is_array($value)) {
+                list($field, $condition, $val) = $value;
+                $this->model = $this->model->where($field, $condition, $val);
+            } else {
+                $this->model = $this->model->where($field, '=', $value);
+            }
+        }
+
+        $results = $this->model->select($columns)->count();
+        $this->resetModel();
+
+        return $results;
+    }
+
     protected function applyConditions(array $where)
     {
         foreach ($where as $field => $value) {

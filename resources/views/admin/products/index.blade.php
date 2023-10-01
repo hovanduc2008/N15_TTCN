@@ -29,11 +29,11 @@
                 <table id="datatable" class="table table-striped dt-responsive nowrap table-vertical" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Image</th>
-                            <th>Category Name</th>
-                            <th>Added Date</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên sách</th>
+                            <th>Ngày xuất bản</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -48,7 +48,7 @@
                                     <p class="m-0 font-14">{{$product -> description}}</p>
                                 </td>
                                 
-                                <td>{{date_format(date_create($product -> created_at), 'd/m/Y H:m:s')}}</td>
+                                <td>{{date_format(date_create($product -> publication_date), 'd/m/Y')}}</td>
                                 <td>{{number_format($product -> quantity)}}</td>
                                 <td>{{number_format($product -> price)}}đ</td>
                             

@@ -29,6 +29,7 @@ class CreateProductsTable extends Migration
             $table->text('content') -> nullable();
             $table->string('meta_title') -> nullable();
             $table->text('meta_description') -> nullable();
+            $table->enum('type', [0, 1]) -> default(0);
             $table->enum('status', [0, 1]) -> default(1);
             $table->date('publication_date') -> nullable();
             $table->datetime('deleted_at') -> nullable();

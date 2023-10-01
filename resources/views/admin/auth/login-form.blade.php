@@ -13,18 +13,18 @@
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="text" class="form-control" name = "email" id="email" placeholder="Enter Email">
+            <input type="email" class="form-control" name = "email" id="email" placeholder="Enter Email" parsley-type="email" required>
         </div>
 
         <div class="form-group">
             <label for="userpassword">Password</label>
-            <input type="password" class="form-control" name = "password" id="userpassword" placeholder="Enter password">
+            <input type="password" class="form-control" name = "password" id="userpassword" placeholder="Enter password" required>
         </div>
 
         <div class="form-group row m-t-20">
             <div class="col-sm-6">
                 <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="customControlInline">
+                    <input type="checkbox" class="custom-control-input" id="customControlInline" >
                     <label class="custom-control-label" for="customControlInline">Remember me</label>
                 </div>
             </div>

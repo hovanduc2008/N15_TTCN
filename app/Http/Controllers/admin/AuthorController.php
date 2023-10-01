@@ -38,7 +38,9 @@ class AuthorController extends Controller
 
     public function handleCreate(Request $request, ImageController $img) {
         $validator = $request ->  validate([
-            'name' => 'required'
+            'name' => 'required',
+            'email' => 'required|string|email|max:255|unique:authors',
+            'phone_number' => 'required|string|max:255|unique:authors'
         ]);
 
         $request -> merge($img -> upload($request)); 
@@ -59,8 +61,10 @@ class AuthorController extends Controller
     }
 
     public function handleEdit(Request $request, ImageController $img) {
-        $validator = $request -> validate([
+        $validator = $request ->  validate([
             'name' => 'required',
+            'email' => 'required|string|email|max:255',
+            'phone_number' => 'required|string|max:255'
         ]);
         $foundAuthor = $this -> authorRepository -> findById($request -> id);
 

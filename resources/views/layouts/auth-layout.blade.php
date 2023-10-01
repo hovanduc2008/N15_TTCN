@@ -17,6 +17,9 @@
         <link href="{{asset('assets/css/icons.css')}}" rel="stylesheet" type="text/css">
         <link href="{{asset('assets/css/style.css')}}" rel="stylesheet" type="text/css">
 
+        <!-- Alertify css -->
+        <link href="{{asset('plugins/alertify/css/alertify.css')}}" rel="stylesheet" type="text/css">
+
     </head>
 
 
@@ -47,6 +50,37 @@
         </div>
 
 
+        <!-- Alertify js -->
+        <script src="{{asset('plugins/alertify/js/alertify.js')}}"></script>
+        <script src="{{asset('assets/pages/alertify-init.js')}}"></script>
+
+        <div class="alertify-logs" style = "z-index: 10000">
+            @if(session('success'))
+                <div class="alert success alert-dismissible fade show mb-0" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Success!</strong> {{session('success')}}
+                </div>
+            @elseif(session('success'))
+                <div class="alert error alert-dismissible fade show mb-0" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Oh Snap!</strong> {{session('error')}}
+                </div>
+            @elseif($errors -> any() > 0)
+                @foreach($errors -> all() as $error)
+                    <div class="alert error alert-dismissible fade show mb-0" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Oh Snap!</strong> {{$error}}
+                    </div>
+                @endforeach
+            @endif
+        </div>
+
         <!-- jQuery  -->
         <script src="{{asset('assets/js/jquery.min.js')}}"></script>
         <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
@@ -58,6 +92,15 @@
 
         <!-- App js -->
         <script src="{{asset('assets/js/app.js')}}"></script>
+
+        <!-- Parsley js -->
+        <script type="text/javascript" src="{{asset('plugins/parsleyjs/parsley.min.js')}}"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('form').parsley();
+            });
+        </script>
 
     </body>
 </html>

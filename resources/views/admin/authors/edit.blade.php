@@ -21,11 +21,11 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="name">Author ID</label>
-                                <input id="name" disabled value = "{{$foundAuthor -> id}}" type="text" class="form-control">
+                                <input id="name" disabled value = "{{$foundAuthor -> id}}" type="text" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="name">Author Name</label>
-                                <input id="name" name="name" value = "{{$foundAuthor -> name}}" type="text" class="form-control">
+                                <input id="name" name="name" value = "{{$foundAuthor -> name}}" type="text" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -45,7 +45,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
-                                <input id="phone_number" name="phone_number" value = "{{$foundAuthor -> phone_number}}" type="text" class="form-control">
+                                <input id="phone_number" name="phone_number" value = "{{$foundAuthor -> phone_number}}" type="text" class="form-control" data-parsley-pattern="^(0|\+84)(\d{9}|\d{10})$">
                             </div>
                             <div class="form-group">
                                 <label for="address">Address</label>

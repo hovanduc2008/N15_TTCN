@@ -25,9 +25,9 @@
                     <table id="datatable" class="table table-striped dt-responsive nowrap table-vertical" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Image</th>
-                                <th>Category Name</th>
-                                <th>Added Date</th>
+                                <th>Hình ảnh</th>
+                                <th>Tên danh mục</th>
+                                <th>Ngày thêm</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
