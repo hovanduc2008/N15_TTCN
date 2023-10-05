@@ -4,6 +4,9 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Charts\SampleChart;
+
+use App\Models\User;
 
 use App\Repositories\Eloquent\OrderEloquentRepository;
 use App\Repositories\Eloquent\OrderDetailEloquentRepository;
@@ -35,11 +38,7 @@ class OrderController extends Controller
     }
 
     public function index(Request $request) {
-        if(count($request -> all()) > 0){
-            $orders = $this -> filterOrders($request);
-        }else {
-            $orders = $this -> orderRepository -> all();
-        }
+        $orders  = $this -> orderRepository -> paginateWhereOrderBy([], 'updated_at','DESC', 1, 3, ['*']);
         $old_filters = $request -> all();
         return view('admin.orders.index', compact('orders', 'old_filters'));
     }
@@ -71,22 +70,68 @@ class OrderController extends Controller
         return $orders;
     }
 
+    // Thống kê
     public function statistics(Request $request) {
         $countCustomer = $this -> customerRepository -> countWhere(['is_admin' => '0'], ['id']);
         $countOrder = $this -> orderRepository -> countWhere([], ['id']);
         $countBorrow = $this -> borrowRepository -> countWhere([], ['id']);
         $topProducts = $this -> productRepository -> topProducts();
         $topCustomerBorrows = $this -> customerRepository -> topCustomerBorrows();
-        
         $topLateReturners = $this -> customerRepository -> topLateReturners();
+
+
+        // Khởi tạo biểu đồ
+        $chartCustomer = new SampleChart;
+
+        // Tạo mảng chứa tên khách hàng
+        $customerNames = $topCustomerBorrows->pluck('name')->toArray();
+
+        // Tạo mảng chứa số lượt mượn của khách hàng
+        $borrowCounts = $topCustomerBorrows->pluck('borrow_count')->toArray();
+
+        // Đặt nhãn trục x cho biểu đồ là tên khách hàng
+        $chartCustomer->labels($customerNames);
+
+        // Thêm dataset cho từng khách hàng
+        $chartCustomer->dataset('Lượt mượn', 'bar', $borrowCounts);
+
+
+        // Khởi tạo biểu đồ
+        $chartCustomerLate = new SampleChart;
+
+        // Tạo mảng chứa tên khách hàng
+        $customerNames = $topLateReturners->pluck('name')->toArray();
+
+        // Tạo mảng chứa số lượt mượn của khách hàng
+        $borrowCounts = $topLateReturners->pluck('late_count')->toArray();
+
+        // Đặt nhãn trục x cho biểu đồ là tên khách hàng
+        $chartCustomerLate->labels($customerNames);
+
+        // Thêm dataset cho từng khách hàng
+        $chartCustomerLate->dataset('Lần muộn', 'bar', $borrowCounts);
+
         
+        // Khởi tạo biểu đồ
+        $chartProduct = new SampleChart;
+
+        // Tạo mảng chứa tên khách hàng
+        $customerNames = $topProducts->pluck('title')->toArray();
+
+        // Tạo mảng chứa số lượt mượn của khách hàng
+        $borrowCounts = $topProducts->pluck('borrow_count')->toArray();
+
+        // Đặt nhãn trục x cho biểu đồ là tên khách hàng
+        $chartProduct->labels($customerNames);
+
+        // Thêm dataset cho từng khách hàng
+        $chartProduct->dataset('Lượt mượn', 'bar', $borrowCounts);
+
         return view('admin.orders.statistics', 
         compact('countCustomer', 
-        'countOrder', 
-        'countBorrow', 
-        'topProducts',
-        'topCustomerBorrows', 
-        'topLateReturners'));
+        'countOrder', 'chartCustomer', 'chartProduct', 'chartCustomerLate',
+        'countBorrow',
+        ));
     }
 
 }

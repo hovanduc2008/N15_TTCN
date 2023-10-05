@@ -39,6 +39,9 @@
         <!-- Responsive datatable examples -->
         <link href="{{asset('plugins/datatables/responsive.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
 
+        <!-- C3 charts css -->
+        <link href="{{asset('plugins/c3/c3.min.css')}}" rel="stylesheet" type="text/css" />
+
         <!-- Basic Css files -->
         <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
         <link href="{{asset('assets/css/icons.css')}}" rel="stylesheet" type="text/css">

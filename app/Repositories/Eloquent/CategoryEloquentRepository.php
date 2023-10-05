@@ -9,11 +9,11 @@ class CategoryEloquentRepository extends BaseEloquentRepository {
         return Category::class;
     }
 
-    public function filterCategories($sort_filter, $status, $keyword) {
+    public function filterCategories($limit ,$sort_filter, $id, $keyword) {
         $query = $this->model->select('categories.*');
     
-        if ($status == 0 || $status == 1) {
-            $query = $query->where('categories.status', $status);
+        if ($id) {
+            $query = $query->where('id', $id);
         }
     
         if ($keyword) {
@@ -39,6 +39,8 @@ class CategoryEloquentRepository extends BaseEloquentRepository {
             }
         }
     
-        return $query->get();
+        $results = $query->paginate($limit);
+    
+        return $results;
     }
 }

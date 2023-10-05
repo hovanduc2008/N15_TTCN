@@ -10,7 +10,7 @@ class ProductEloquentRepository extends BaseEloquentRepository {
     }
 
     public function filterProducts($price_filter, $sort_filter, $status, $keyword) {
-        $query = $this->model->select('products.*');
+        $query = $this->model->select('products.*') -> where('type', '1');
     
         if ($status == 0 || $status == 1) {
             $query = $query->where('products.status', $status);
@@ -57,6 +57,55 @@ class ProductEloquentRepository extends BaseEloquentRepository {
         }
     
         return $query->get();
+    }
+
+    public function filterBorrowProducts($limit ,$sort_filter, $id, $keyword, $author_id, $cate_id) {
+        $query = $this->model->select('products.*') -> where('type', '1');
+        
+        if ($id) {
+            $query = $query->where("id", $id);
+        }
+
+        if ($author_id) {
+            $query = $query->where("author_id", $author_id);
+        }
+
+        if ($cate_id) {
+            $query = $query->where("category_id", $cate_id);
+        }
+    
+        if ($keyword) {
+            $query = $query->where("title","like", "%$keyword%");
+        }
+        
+    
+        if ($sort_filter) {
+            switch ($sort_filter) {
+                case 'latest':
+                    $query = $query->orderBy('products.created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query = $query->orderBy('products.created_at', 'asc');
+                    break;
+                case 'price_asc':
+                    $query = $query->orderBy('products.price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query = $query->orderBy('products.price', 'desc');
+                    break;
+                case 'a_z':
+                    $query = $query->orderBy('products.title', 'asc');
+                    break;
+                case 'z_a':
+                    $query = $query->orderBy('products.title', 'desc');
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+        $result = $query -> paginate($limit);
+        return $result;
     }
 
     public function topProducts()

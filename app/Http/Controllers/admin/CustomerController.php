@@ -15,9 +15,42 @@ class CustomerController extends Controller
         $this -> customerRepository = $customerRepository;
     }
 
-    public function index() {
-        $customers = $this -> customerRepository -> allCustomer();
+    public function index(Request $request) {
+
+        $filters = $this -> handleFilter($request);
+        if(count($filters) > 0) {
+            $customers = $this -> customerRepository -> filterCustomers(
+                $filters['limit'] ?? 5, 
+                $filters['sort_filter'] ?? 'latest',
+                $filters['id'] ?? null,
+                $filters['name'] ?? null,
+                $filters['phone_number'] ?? null,
+            );
+        }else {
+            $customers  = $this -> customerRepository -> paginateWhereOrderBy(['is_admin' => '0'], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
+        }
+
+        $current_filters = $request -> all();
         
-        return view('admin.customers.index', compact('customers'));
+        return view('admin.customers.index', compact('customers', 'current_filters'));
+    }
+
+    public function handleFilter(Request $request) {
+        $filterOptions = [
+            'limit',
+            'sort_filter',
+            'id',
+            'name',
+            'phone_number'
+        ];
+        
+        $filterValue = [];
+        
+        foreach ($filterOptions as $key => $value) {
+            if ($request->has($value)) {
+                $filterValue[$value] = $request->input($value);
+            }
+        }
+        return $filterValue;
     }
 }

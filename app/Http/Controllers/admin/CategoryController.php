@@ -25,13 +25,20 @@ class CategoryController extends Controller
     }
 
     public function index(Request $request) {
-        if(count($request -> all()) > 0) {
-            $categories = $this -> filterCategories($request);
+        
+        $filters = $this -> handleFilter($request);
+        if(count($filters) > 0) {
+            $categories = $this -> categoryRepository -> filterCategories(
+                $filters['limit'] ?? 5, 
+                $filters['sort_filter'] ?? 'latest',
+                $filters['id'] ?? null,
+                $filters['name'] ?? null
+            );
         }else {
-            $categories = $this -> categoryRepository -> all(); 
-        }  
-        $old_filters = $request -> all();
-        return view('admin.categories.index', compact('categories', 'old_filters'));
+            $categories  = $this -> categoryRepository -> paginateWhereOrderBy([], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
+        }
+        $current_filters = $request -> all();
+        return view('admin.categories.index', compact('categories', 'current_filters'));
     }
 
     public function createForm() {
@@ -120,12 +127,21 @@ class CategoryController extends Controller
         return redirect() -> route('admin.categories') -> with('success', 'Xóa thành công danh mục '.$foundCategory -> title);
     }
 
-    public function filterCategories(Request $request) {
-        $categories = $this -> categoryRepository -> filterCategories(
-            $request -> sort_filter,
-            $request -> status_filter,
-            $request -> keyword,
-        );
-        return $categories;
+    public function handleFilter(Request $request) {
+        $filterOptions = [
+            'limit',
+            'sort_filter',
+            'id',
+            'name'
+        ];
+        
+        $filterValue = [];
+        
+        foreach ($filterOptions as $key => $value) {
+            if ($request->has($value)) {
+                $filterValue[$value] = $request->input($value);
+            }
+        }
+        return $filterValue;
     }
 }

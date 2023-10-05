@@ -43,121 +43,59 @@
     </div>
 </div>
 <div class="row">
-<div class="col-md-12 col-xl-6">
-        <div class="card m-b-20">
-            <div class="card-body">
-                <h4 class="mt-0 m-b-30 header-title">Top sách được mượn</h4>
-
-                <div class="table-responsive">
-                    <table class="table table-vertical mb-0">
-                        <tbody>
-                            @foreach($topProducts as $product)
-                                <tr>
-                                    <td>
-                                        #{{$product -> id}}
-                                    </td>
-                                    <td>
-                                        {{$product -> title}}
-                                    </td>
-                                    <td>
-                                        {{$product -> borrow_count}}
-                                        <p class="m-0 text-muted font-14">Lượt mượn</p>
-                                    </td>
-                                    
-                                    <td>
-                                        <a href = "#" class="btn btn-secondary btn-sm waves-effect">Detail</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="col-md-12 col-xl-6">
-        <div class="card m-b-20">
-            <div class="card-body">
-                <h4 class="mt-0 m-b-30 header-title">Top người mượn sách</h4>
+    
+        <div class="card m-b-10">
+            <h4 class="mt-3 mb-30 ml-3 header-title">Top 5 Sách được mượn nhiều nhất</h4>   
+            <div id="product">
+                {{$chartProduct -> container()}}
 
-                <div class="table-responsive">
-                    <table class="table table-vertical mb-0">
-
-                        <tbody>
-                            @foreach($topCustomerBorrows as $customer)
-                                <tr>
-                                    <td>
-                                        #{{$customer -> id}}
-                                        
-                                    </td>
-                                    <td>
-                                        {{$customer -> name}}
-                                    </td>
-                                    <td>
-                                        {{$customer -> email}}
-                                        <p class="m-0 text-muted font-14">Email</p>
-                                    </td>
-                                    <td>
-                                        {{$customer -> borrow_count}}
-                                        <p class="m-0 text-muted font-14">Lần mượn</p>
-                                    </td>
-                                    
-                                    <td>
-                                        <a href = "#" class="btn btn-secondary btn-sm waves-effect">Detail</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        
-
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>
+    <div class="col-lg-6">
+        <div class="card m-b-20">
+            <h4 class="mt-3 mb-30 ml-3 header-title">Top 5 khách hàng mượn sách nhiều nhất</h4> 
+            <div id="customer">
+                {!!$chartCustomer -> container()!!}
+            </div>
+        </div>
+    </div> <!-- end col -->
 </div>
 <div class="row">
-    <div class="col-md-12 col-xl-6">
+    <div class="col-lg-6">
         <div class="card m-b-20">
-            <div class="card-body">
-                <h4 class="mt-0 m-b-30 header-title">Top người trả muộn</h4>
-
-                <div class="table-responsive">
-                    <table class="table table-vertical mb-0">
-
-                        @foreach($topLateReturners as $customer)
-                            <tr>
-                                <td>
-                                    #{{$customer -> id}}
-                                    
-                                </td>
-                                <td>
-                                    {{$customer -> name}}
-                                </td>
-                                <td>
-                                    {{$customer -> email}}
-                                    <p class="m-0 text-muted font-14">Email</p>
-                                </td>
-                                <td>
-                                    {{$customer -> late_count}}
-                                    <p class="m-0 text-muted font-14">Lần muộn</p>
-                                </td>
-                                
-                                <td>
-                                    <a href = "#" class="btn btn-secondary btn-sm waves-effect">Detail</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
+        <h4 class="mt-3 mb-30 ml-3 header-title">Top 5 khách hàng trả muộn nhiều nhất</h4> 
+            <div id="customer-late">
+                {!!$chartCustomerLate -> container()!!}
             </div>
         </div>
-    </div>
+    </div> <!-- end col -->
+
+    
     
 </div>
 @endsection
 
 @section('scripts')
-    
+        <!--C3 Chart-->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://unpkg.com/vue"></>
+        <script>
+        var app = new Vue({
+            el: '#customer',
+        });
+        var app1 = new Vue({
+            el: '#product',
+        });
+        var app2 = new Vue({
+            el: '#customer-late'
+        })
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.7/c3.min.js"></script>
+        {!! $chartCustomer->script() !!}
+        {!! $chartCustomerLate->script() !!}
+        {!! $chartProduct->script() !!}
+        
 @endsection

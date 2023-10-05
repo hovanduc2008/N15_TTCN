@@ -62,7 +62,7 @@
                     </button>
                     <strong>Success!</strong> {{session('success')}}
                 </div>
-            @elseif(session('success'))
+            @elseif(session('error'))
                 <div class="alert error alert-dismissible fade show mb-0" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

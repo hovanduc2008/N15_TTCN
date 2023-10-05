@@ -23,13 +23,21 @@ class AuthorController extends Controller
     }
 
     public function index(Request $request) {
-        if(count($request -> all()) > 0) {
-            $authors = $this -> filterAuthors($request);
+        $filters = $this -> handleFilter($request);
+        if(count($filters) > 0) {
+            $authors = $this -> authorRepository -> filterAuthors(
+                $filters['limit'] ?? 5, 
+                $filters['sort_filter'] ?? 'latest',
+                $filters['id'] ?? null,
+                $filters['name'] ?? null,
+                $filters['phone_number'] ?? null,
+            );
         }else {
-            $authors = $this -> authorRepository -> all(); 
+            $authors  = $this -> authorRepository -> paginateWhereOrderBy([], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
         }
-        $old_filters = $request -> all();
-        return view('admin.authors.index', compact('authors', 'old_filters'));
+
+        $current_filters = $request -> all();
+        return view('admin.authors.index', compact('authors', 'current_filters'));
     }
 
     public function createForm() {
@@ -75,16 +83,6 @@ class AuthorController extends Controller
             ]);
         }
 
-        // if(isset($request -> is_active)) {  
-        //     $request -> merge([
-        //         'status' => 1
-        //     ]);
-        // }else {
-        //     $request -> merge([
-        //         'status' => 0
-        //     ]);
-        // }
-
         $hasFileImage = $request -> hasFile('upload_image');
         $hasFileThumbnail = $request -> hasFile('upload_thumbnail');
 
@@ -120,6 +118,25 @@ class AuthorController extends Controller
         $this -> authorRepository -> delete($id);
         
         return redirect() -> route('admin.authors') -> with('success', 'Xóa thành công tác giả');
+    }
+
+    public function handleFilter(Request $request) {
+        $filterOptions = [
+            'limit',
+            'sort_filter',
+            'id',
+            'name',
+            'phone_number'
+        ];
+        
+        $filterValue = [];
+        
+        foreach ($filterOptions as $key => $value) {
+            if ($request->has($value)) {
+                $filterValue[$value] = $request->input($value);
+            }
+        }
+        return $filterValue;
     }
 
     public function filterAuthors(Request $request) {

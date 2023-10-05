@@ -175,6 +175,38 @@ abstract class BaseEloquentRepository
         return $results;
     }
 
+    public function paginate($limit = null, $columns = array('*'))
+    {
+        $limit = is_null($limit) ? config('repository.pagination.limit', 20) : $limit;
+        $results = $this->model->paginate($limit, $columns);
+        $this->resetModel();
+
+        return $results;
+    }
+
+    public function paginateOrderBy($limit = null, $columns = array('*'))
+    {
+        $limit = is_null($limit) ? config('repository.pagination.limit', 20) : $limit;
+        $results = $this->model->orderBy('created_at', 'DESC')->paginate($limit, $columns);
+        $this->resetModel();
+
+        return $results;
+    }
+
+    public function paginateWhereOrderBy(array $where, $order_by = 'updated_at', $order = 'DESC', $current_page = null, $limit = null, $columns = array('*'))
+    {
+        $limit = is_null($limit) ? config('repository.pagination.limit', 10) : $limit;
+        $current_page = is_null($current_page) ? config('repository.pagination.limit', 1) : $current_page;
+
+        $this->applyConditions($where);
+
+        $results = $this->model->orderBy($order_by, $order)->paginate($limit, $columns, 'page', $current_page);
+
+        $this->resetModel();
+
+        return $results;
+    }
+
     protected function applyConditions(array $where)
     {
         foreach ($where as $field => $value) {

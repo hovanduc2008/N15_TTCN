@@ -31,13 +31,31 @@ class ProductController extends Controller
 
     public function index(Request $request) {    
         
-        if(count($request -> all()) > 0) {
-            $products = $this -> filterProducts($request);
-        }else {
-            $products = $this -> productRepository -> findWhere(["type" => "0"]); 
-        }
+        $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '0'], 'updated_at','DESC', 1, 3, ['*']);
+
         $old_filters = $request -> all();
         return view('admin.products.index', compact('products', 'old_filters'));
+    }
+
+    public function borrowProducts(Request $request) {
+        $filters = $this -> handleBorrowFilter($request);
+        if(count($filters) > 0) {
+            $products = $this -> productRepository -> filterBorrowProducts(
+                $filters['limit'] ?? 5, 
+                $filters['sort_filter'] ?? 'latest',
+                $filters['id'] ?? null,
+                $filters['name'] ?? null,
+                $filters['author_id'] ?? null,
+                $filters['cate_id'] ?? null,
+            );
+        }else {
+            $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '1'], 'updated_at','DESC', 1, 5, ['*']);
+        }
+
+        $current_filters = $request -> all();
+
+        
+        return view('admin.products.borrowproducts', compact('products', 'current_filters'));
     }
 
     public function createForm() {
@@ -93,16 +111,6 @@ class ProductController extends Controller
             'category_id' => $request -> category,
         ]);
 
-        // if(isset($request -> is_active)) {  
-        //     $request -> merge([
-        //         'status' => 1
-        //     ]); 
-        // }else {
-        //     $request -> merge([
-        //         'status' => 0
-        //     ]);
-        // }
-
         $hasFileImage = $request -> hasFile('upload_image');
         $hasFileThumbnail = $request -> hasFile('upload_thumbnail');
 
@@ -135,9 +143,24 @@ class ProductController extends Controller
         return redirect() -> route('admin.products') -> with('success', 'Xóa thành công product');
     }
 
-    public function borrowProducts() {
-        $products = $this -> productRepository -> findWhere(['type'=> '1']);
-        return view('admin.products.borrowproducts', compact('products'));
+    public function handleBorrowFilter(Request $request) {
+        $filterOptions = [
+            'limit',
+            'sort_filter',
+            'id',
+            'title',
+            'author_id',
+            'cate_id'
+        ];
+        
+        $filterValue = [];
+        
+        foreach ($filterOptions as $key => $value) {
+            if ($request->has($value)) {
+                $filterValue[$value] = $request->input($value);
+            }
+        }
+        return $filterValue;
     }
 
     public function filterProducts(Request $request) {

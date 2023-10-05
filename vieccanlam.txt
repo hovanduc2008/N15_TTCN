@@ -22,3 +22,10 @@ Thống kê Sách được mượn nhiều nhất
 
 -- 30/09/2023 
 Thêm biểu đồ (Tổng mượn, tổng trả, 5 người mượn nhiều nhất, sách nhiều người mượn nhất)
+
+
+
+-- 03/10/2023
+Sửa lại ô Search (Mã, tên, số đt) -> 1
+Thêm đủ các chức năng thêm sửa xóa
+

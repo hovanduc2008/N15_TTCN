@@ -26,24 +26,39 @@ class BorrowController extends Controller
     }
 
     public function index(Request $request) {
+        $filter = $this -> handleFilter($request);
+        if(count($filter) > 0) {
+            $borrows = $this -> borrowRepository -> filterBorrows(
+                $filter['limit'] ?? 5, 
+                $filter['sort_filter'] ?? null,
+                $filter['id'] ?? null,
+                $filter['time_filter'] ?? null,
+                'all',
+                null
+            );
+        }else {
+            $borrows  = $this -> borrowRepository -> paginateWhereOrderBy([], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
+        }
+        $current_filters = $request ->all();
         
-        $borrows = $this -> borrowRepository -> all();
-        
-        return view('admin.borrows.index', compact('borrows'));
+        return view('admin.borrows.index', compact('borrows', 'current_filters'));
     }
 
     public function filterByUser(Request $request) {
         $user_id = $request -> route('user_id');
-        $type = $request -> route('type');
-        $foundUser = $this -> customerRepository -> findById($user_id);
-        if($type == 'borrowing') {
-            $borrows = $foundUser -> borrowing;
-        }else if($type == 'borrowed') {
-            $borrows = $foundUser -> borrowed;
-        }else {
-            $borrows = $foundUser -> borrows;
-        }
-        return view('admin.borrows.index', compact('borrows'));
+        $filter = $this -> handleFilter($request);
+        
+        $borrows = $this -> borrowRepository -> filterBorrows(
+            $filter['limit'] ?? null, 
+            $filter['sort_filter'] ?? null,
+            $filter['id'] ?? null,
+            $filter['time_filter'] ?? null,
+            $request -> route('type'),
+            $user_id
+        );
+        
+        $current_filters = $request -> all();
+        return view('admin.borrows.index', compact('borrows', 'current_filters'));
     }
 
     public function createForm(Request $request) {
@@ -88,11 +103,30 @@ class BorrowController extends Controller
         
     }
 
+    public function handleFilter(Request $request) {
+        $filterOptions = [
+            'limit',
+            'sort_filter',
+            'id',
+            'time_filter',
+            'type'
+        ];
+        
+        $filterValue = [];
+        
+        foreach ($filterOptions as $key => $value) {
+            if ($request->has($value)) {
+                $filterValue[$value] = $request->input($value);
+            }
+        }
+        return $filterValue;
+    }
+
     public function filterByProduct(Request $request) {
         $product_id = $request -> route('product_id');
         
-        $foundProduct = $this -> productRespository -> findById($product_id);
-        $borrows = $foundProduct -> borrowing;
+        $borrows  = $this -> borrowRepository -> paginateWhereOrderBy(['product_id' => $product_id], 'updated_at','DESC', $request -> page ?? 1, 4, ['*']);
+
         return view('admin.borrows.index', compact('borrows'));
     }
 }

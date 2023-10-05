@@ -9,15 +9,19 @@ class AuthorEloquentRepository extends BaseEloquentRepository {
         return Author::class;
     }
 
-    public function filterAuthors($sort_filter, $status, $keyword) {
+    public function filterAuthors($limit ,$sort_filter, $id, $name, $phone_number) {
         $query = $this->model->select('authors.*');
     
-        if ($status == 0 || $status == 1) {
-            $query = $query->where('authors.status', $status);
+        if ($id) {
+            $query = $query->where('id', $id);
         }
     
-        if ($keyword) {
-            $query = $query->where("name","like", "%$keyword%");
+        if ($name) {
+            $query = $query->where("name","like", "%$name%");
+        }
+
+        if ($phone_number) {
+            $query = $query->where("phone_number", $phone_number);
         }
     
         if ($sort_filter) {
@@ -39,6 +43,8 @@ class AuthorEloquentRepository extends BaseEloquentRepository {
             }
         }
     
-        return $query->get();
+        $results = $query->paginate($limit);
+    
+        return $results;
     }
 }

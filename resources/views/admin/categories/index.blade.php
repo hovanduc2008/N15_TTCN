@@ -15,6 +15,12 @@
         "a_z" => "Từ A-Z",
         "z_a" => "Từ Z-A",
     ];
+
+    $limit_option = [
+        5, 10, 20, 30, 50    
+    ];
+
+    $pagination = $categories;
 @endphp
 
 @section('main')
@@ -22,37 +28,92 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="datatable" class="table table-striped dt-responsive nowrap table-vertical" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Hình ảnh</th>
-                                <th>Tên danh mục</th>
-                                <th>Ngày thêm</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($categories as $category)
-                                <tr>
-                                    <td class="product-list-img">
-                                        <img src="{{$category -> thumbnail}}" class="img-fluid" alt="tbl">
-                                    </td>
-                                    <td>
-                                        <h6 class="mt-0 m-b-5">{{$category -> title}}</h6>
-                                        <p class="m-0 font-14">{{$category -> description}}</p>
-                                    </td>
-                                    <td>{{date_format(date_create($category -> created_at), 'd/m/Y H:m:s')}}</td>
-                                    
-                                
-                                    <td>
-                                        <a href="{{route('admin.category.edit', $category -> id)}}" class="m-r-15 text-muted" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="mdi mdi-pencil font-18"></i></a>
-                                        <button class = "btn-danger" data-toggle="modal" data-target=".bs-delete-modal-sm" onclick = "modalConfirmDelete('Xác nhận xóa danh mục', 'Danh mục này sẽ bị xóa và không thể khôi phục', '{{route('admin.category.delete', $category -> id)}})')" class="text-muted" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="mdi mdi-close font-18"></i></button>
-                                    </td>
-                                </tr>
-                            @endforeach   
-                        </tbody>
-                    </table>
+                    <form class="row" method = "GET">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                <select name="limit" id="limit" class = "form-control">
+                                    @foreach($limit_option as $value)
+                                        @if(isset($current_filters['limit']) && $value == $current_filters['limit'])
+                                            <option selected value="{{$value}}">Hiển thị {{$value}}</option>
+                                        @else
+                                            <option value="{{$value}}">Hiển thị {{$value}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                </div>
+                                <div class="col">
+                                    <input type="text" name = "id" class="form-control" value = "{{$current_filters['id'] ?? ''}}" placeholder = "Tìm theo mã">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" name = "name" class = "form-control" value = "{{$current_filters['name'] ?? ''}}" placeholder = "Tìm theo tên">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <select name="sort_filter" id="" class = "form-control">
+                                    @foreach($sort_option as $key => $option)
+                                        @if(isset($current_filters['sort_filter']) && $key == $current_filters['sort_filter'])
+                                            <option selected value="{{$key}}">{{$option}}</option>
+                                        @endif
+                                        <option  value="{{$key}}">{{$option}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                        </div>
+                        <div class="col-2 ml-2">
+                            <div class="row">
+                                <button class="btn btn-info" type="submit">Lọc</button>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <a class="btn btn-secondary" href="{{route('admin.categories')}}">Hủy lọc</a>
+                            </div>
+                        </div>
+                    </form>
 
+                    <hr>
+                    <div class="row">
+                        <table id="datatable" class="table table-bordered dt-responsive nowrap dataTable no-footer dtr-inline" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên danh mục</th>
+                                    <th>Ngày thêm</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($categories as $category)
+                                    <tr>
+                                        <td>#{{$category -> id}}</td>
+                                        <td class="product-list-img">
+                                            <img src="{{$category -> thumbnail}}" class="img-fluid" alt="tbl">
+                                        </td>
+                                        <td>
+                                            <h6 class="mt-0 m-b-5">{{$category -> title}}</h6>
+                                            <p class="m-0 font-14">{{$category -> description}}</p>
+                                        </td>
+                                        <td>{{date_format(date_create($category -> created_at), 'd/m/Y H:m:s')}}</td>
+                                        
+                                    
+                                        <td>
+                                            <a href="{{route('admin.category.edit', $category -> id)}}" class="m-r-15 text-muted" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="mdi mdi-pencil font-18"></i></a>
+                                            <button class = "btn-danger" data-toggle="modal" data-target=".bs-delete-modal-sm" onclick = "modalConfirmDelete('Xác nhận xóa danh mục', 'Danh mục này sẽ bị xóa và không thể khôi phục', '{{route('admin.category.delete', $category -> id)}})')" class="text-muted" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="mdi mdi-close font-18"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach   
+                            </tbody>
+                        </table>
+                    </div>
+                    @include('partials.admin.pagination')
+                    
                 </div>
             </div>
         </div>
@@ -60,15 +121,5 @@
 @endsection
 
 @section('scripts')
-    <!-- Datatable js -->
-    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></>
-    <script src="{{asset('plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <!-- Responsive examples -->
-    <script src="{{asset('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-    <script src="{{asset('plugins/datatables/responsive.bootstrap4.min.js')}}"></script>
-    <script>
-        $(document).ready(function () {
-            $('#datatable').DataTable();
-        });
-    </script>
+    
 @endsection
