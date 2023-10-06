@@ -21,19 +21,16 @@ class CustomerEloquentRepository extends BaseEloquentRepository {
         return $results;
     }
 
-    public function filterCustomers($limit ,$sort_filter, $id, $name, $phone_number) {
+    public function filterCustomers($limit ,$sort_filter, $search) {
         $query = $this->model->select('users.*')->where('is_admin', '=', '0');
     
-        if ($id) {
-            $query = $query->where('id', $id);
-        }
-    
-        if ($name) {
-            $query = $query->where("name","like", "%$name%");
-        }
-
-        if ($phone_number) {
-            $query = $query->where("phone_number", $phone_number);
+        if ($search) {
+            $query = $query->where(function($query) use ($search) {
+                $query->orWhere('id',"like",  "%$search%")
+                    ->orWhere("name", "like", "%$search%")
+                    ->orWhere("phone_number", "like", "%$search%")
+                    ->orWhere("email", "like", "%$search%");
+            });
         }
     
         if ($sort_filter) {

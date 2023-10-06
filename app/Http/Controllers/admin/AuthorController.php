@@ -28,9 +28,7 @@ class AuthorController extends Controller
             $authors = $this -> authorRepository -> filterAuthors(
                 $filters['limit'] ?? 5, 
                 $filters['sort_filter'] ?? 'latest',
-                $filters['id'] ?? null,
-                $filters['name'] ?? null,
-                $filters['phone_number'] ?? null,
+                $filters['search'] ?? null
             );
         }else {
             $authors  = $this -> authorRepository -> paginateWhereOrderBy([], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
@@ -109,13 +107,14 @@ class AuthorController extends Controller
     public function handleDelete(Request $request, ImageController $img) {
         $id = $request -> id;
         $foundAuthor = $this -> authorRepository -> findById($id);
-        $img -> remove($foundAuthor -> image);
-        $productsDp = $this -> productRepository -> findWhere(['author_id' => $id], array('*'));
-        foreach($productsDp as $product) {
-            $img -> remove($product -> image);
-        }
-        $this -> productRepository -> deleteWhere(['author_id' => $id]);
-        $this -> authorRepository -> delete($id);
+        $foundAuthor -> delete();
+        // $img -> remove($foundAuthor -> image);
+        // $productsDp = $this -> productRepository -> findWhere(['author_id' => $id], array('*'));
+        // foreach($productsDp as $product) {
+        //     $img -> remove($product -> image);
+        // }
+        // $this -> productRepository -> deleteWhere(['author_id' => $id]);
+        // $this -> authorRepository -> delete($id);
         
         return redirect() -> route('admin.authors') -> with('success', 'Xóa thành công tác giả');
     }
@@ -124,9 +123,7 @@ class AuthorController extends Controller
         $filterOptions = [
             'limit',
             'sort_filter',
-            'id',
-            'name',
-            'phone_number'
+            'search'
         ];
         
         $filterValue = [];

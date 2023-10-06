@@ -9,27 +9,24 @@ class ProductEloquentRepository extends BaseEloquentRepository {
         return Product::class;
     }
 
-    public function filterProducts($price_filter, $sort_filter, $status, $keyword) {
-        $query = $this->model->select('products.*') -> where('type', '1');
-    
-        if ($status == 0 || $status == 1) {
-            $query = $query->where('products.status', $status);
-        }
-    
-        if ($keyword) {
-            $query = $query->where("title","like", "%$keyword%");
-        }
-        if ($price_filter && is_array($price_filter)) {
-            
-            $query = $query->where(function ($q) use ($price_filter) {
-                foreach ($price_filter as $price_range) {
-                    $price_arr = explode('-', $price_range);
-                    $start_price = $price_arr[0];
-                    $end_price = $price_arr[1];
-                    $q->orWhereBetween('products.price', [$start_price, $end_price]);
-                }
+    public function filterProducts($limit ,$sort_filter, $search, $author_id, $cate_id) {
+        $query = $this->model->select('products.*') -> where('type', '0');
+        
+        if ($search) {
+            $query = $query->where(function($query) use ($search) {
+                $query->orWhere('id',"like",  "%$search%")
+                    ->orWhere("title", "like", "%$search%");
             });
         }
+
+        if ($author_id) {
+            $query = $query->where("author_id", $author_id);
+        }
+
+        if ($cate_id) {
+            $query = $query->where("category_id", $cate_id);
+        }
+        
     
         if ($sort_filter) {
             switch ($sort_filter) {
@@ -56,14 +53,18 @@ class ProductEloquentRepository extends BaseEloquentRepository {
             }
         }
     
-        return $query->get();
+        $result = $query -> paginate($limit);
+        return $result;
     }
 
-    public function filterBorrowProducts($limit ,$sort_filter, $id, $keyword, $author_id, $cate_id) {
+    public function filterBorrowProducts($limit ,$sort_filter, $search, $author_id, $cate_id) {
         $query = $this->model->select('products.*') -> where('type', '1');
         
-        if ($id) {
-            $query = $query->where("id", $id);
+        if ($search) {
+            $query = $query->where(function($query) use ($search) {
+                $query->orWhere('id',"like",  "%$search%")
+                    ->orWhere("title", "like", "%$search%");
+            });
         }
 
         if ($author_id) {
@@ -72,10 +73,6 @@ class ProductEloquentRepository extends BaseEloquentRepository {
 
         if ($cate_id) {
             $query = $query->where("category_id", $cate_id);
-        }
-    
-        if ($keyword) {
-            $query = $query->where("title","like", "%$keyword%");
         }
         
     

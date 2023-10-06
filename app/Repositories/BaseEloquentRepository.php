@@ -207,6 +207,26 @@ abstract class BaseEloquentRepository
         return $results;
     }
 
+    public function paginateWhere(array $where, $current_page = null, $limit = null, $columns = array('*'))
+    {
+        $limit = is_null($limit) ? config('repository.pagination.limit', 10) : $limit;
+        $current_page = is_null($current_page) ? config('repository.pagination.limit', 1) : $current_page;
+
+        foreach ($where as $field => $value) {
+            if (is_array($value)) {
+                list($field, $condition, $val) = $value;
+                $this->model = $this->model->where($field, $condition, $val);
+            } else {
+                $this->model = $this->model->where($field, '=', $value);
+            }
+        }
+        $results = $this->model->orderBy('updated_at', 'DESC')->paginate($limit, $columns, 'page', $current_page);
+
+        $this->resetModel();
+
+        return $results;
+    }
+
     protected function applyConditions(array $where)
     {
         foreach ($where as $field => $value) {

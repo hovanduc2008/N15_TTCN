@@ -13,6 +13,9 @@
         "z_a" => "Từ Z-A",
     ];
 
+    $limit_option = [
+        5, 10, 20, 30, 50    
+    ];
 
     $status_option = [
         "2" => "Tất cả",
@@ -32,38 +35,51 @@
                     <div class="col">
                         <div class="row">
                             <div class="col">
-                                <select name="" id="limit" class = "form-control">
-                                    <option value="5">Hiển thị 5</option>
+                                <select name="limit" id="limit" class = "form-control">
+                                    @foreach($limit_option as $value)
+                                        @if(isset($current_filters['limit']) && $value == $current_filters['limit'])
+                                            <option selected value="{{$value}}">Hiển thị {{$value}}</option>
+                                        @else
+                                            <option value="{{$value}}">Hiển thị {{$value}}</option>
+                                        @endif
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col">
-                                <input type="text" name = "id" class="form-control" placeholder = "Tìm theo mã">
+                                <select name="sort_filter" id="" class = "form-control">
+                                    @foreach($sort_option as $key => $option)
+                                        @if(isset($current_filters['sort_filter']) && $key == $current_filters['sort_filter'])
+                                            <option selected value="{{$key}}">{{$option}}</option>
+                                        @else
+                                            <option  value="{{$key}}">{{$option}}</option>
+                                        @endif
+                                        
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col">
-                                <input type="text" name = "name" class = "form-control" placeholder = "Tìm theo tên">
+                                <input type="text" name = "search" value = "{{$current_filters['search'] ?? ''}}" class = "form-control" placeholder = "Tìm kiếm...">
                             </div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="row">
-                            <select name="sort" id="" class = "form-control">
-                                <option value="">Sắp sếp theo tên</option>
-                            </select>
+                            
                         </div>
                         <br>
                         <div class="row">
                             <div class="col">
-                                <select name="author" class = "form-control" id="">
+                                <select name="author_id" class = "form-control" id="">
                                     <option value="">
                                         Tác giả
                                     </option>
                                 </select>
                             </div>
                             <div class="col">
-                                <select name="" class = "form-control" id="">
+                                <select name="cate_id" class = "form-control" id="">
                                     <option value="">Danh mục</option>
                                 </select>
                             </div>

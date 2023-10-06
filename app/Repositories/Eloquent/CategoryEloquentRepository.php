@@ -9,15 +9,14 @@ class CategoryEloquentRepository extends BaseEloquentRepository {
         return Category::class;
     }
 
-    public function filterCategories($limit ,$sort_filter, $id, $keyword) {
+    public function filterCategories($limit ,$sort_filter, $search) {
         $query = $this->model->select('categories.*');
     
-        if ($id) {
-            $query = $query->where('id', $id);
-        }
-    
-        if ($keyword) {
-            $query = $query->where("title","like", "%$keyword%");
+        if ($search) {
+            $query = $query->where(function($query) use ($search) {
+                $query->orWhere('id',"like",  "%$search%")
+                    ->orWhere("title", "like", "%$search%");
+            });
         }
     
         if ($sort_filter) {

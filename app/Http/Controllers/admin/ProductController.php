@@ -30,26 +30,36 @@ class ProductController extends Controller
     }
 
     public function index(Request $request) {    
-        
-        $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '0'], 'updated_at','DESC', 1, 3, ['*']);
-
-        $old_filters = $request -> all();
-        return view('admin.products.index', compact('products', 'old_filters'));
-    }
-
-    public function borrowProducts(Request $request) {
-        $filters = $this -> handleBorrowFilter($request);
+        $filters = $this -> handleFilter($request);
         if(count($filters) > 0) {
-            $products = $this -> productRepository -> filterBorrowProducts(
+            $products = $this -> productRepository -> filterProducts(
                 $filters['limit'] ?? 5, 
-                $filters['sort_filter'] ?? 'latest',
-                $filters['id'] ?? null,
-                $filters['name'] ?? null,
+                $filters['sort_filter'] ?? null,
+                $filters['search'] ?? null,
                 $filters['author_id'] ?? null,
                 $filters['cate_id'] ?? null,
             );
         }else {
-            $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '1'], 'updated_at','DESC', 1, 5, ['*']);
+            $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '0'], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
+        }
+
+        $current_filters = $request -> all();
+        return view('admin.products.index', compact('products', 'current_filters'));
+    }
+
+    public function borrowProducts(Request $request) {
+        
+        $filters = $this -> handleFilter($request);
+        if(count($filters) > 0) {
+            $products = $this -> productRepository -> filterBorrowProducts(
+                $filters['limit'] ?? 5, 
+                $filters['sort_filter'] ?? null,
+                $filters['search'] ?? null,
+                $filters['author_id'] ?? null,
+                $filters['cate_id'] ?? null,
+            );
+        }else {
+            $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '1'], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
         }
 
         $current_filters = $request -> all();
@@ -58,6 +68,8 @@ class ProductController extends Controller
         return view('admin.products.borrowproducts', compact('products', 'current_filters'));
     }
 
+
+    // Create Product
     public function createForm() {
         $categories = $this -> categoryRepository -> all();
         $authors = $this -> authorRepository -> all();
@@ -89,6 +101,9 @@ class ProductController extends Controller
         return redirect() -> route('admin.products') -> with('success', 'Tạo thành công sách');
     }
 
+
+
+    // Edit Product
     public function editForm(Request $request) {
         $categories = $this -> categoryRepository -> all();
         $authors = $this -> authorRepository -> all();
@@ -133,22 +148,26 @@ class ProductController extends Controller
         return redirect() -> route('admin.product.edit', $foundProduct -> id) -> with('success', 'Updated product');
     }
 
+
+    // Delete Product
     public function handleDelete(Request $request, ImageController $img) {
         $id = $request -> id;
         $foundProduct = $this -> productRepository -> findById($id);
-        $img -> remove($foundProduct -> image);
+        // $img -> remove($foundProduct -> image);
 
-        $this -> productRepository -> delete($id);
-        
+        // $this -> productRepository -> delete($id);
+        $foundProduct -> delete();
         return redirect() -> route('admin.products') -> with('success', 'Xóa thành công product');
     }
 
-    public function handleBorrowFilter(Request $request) {
+
+
+    // Handle Filter Product
+    public function handleFilter(Request $request) {
         $filterOptions = [
             'limit',
             'sort_filter',
-            'id',
-            'title',
+            'search',
             'author_id',
             'cate_id'
         ];
@@ -162,27 +181,4 @@ class ProductController extends Controller
         }
         return $filterValue;
     }
-
-    public function filterProducts(Request $request) {
-        $price_start = $request -> price_start;
-        $price_end = $request -> price_end;
-
-        if(isset($price_start) && isset($price_end)){
-            $price_range = [
-                $price_start."-".$price_end
-            ];
-        }else {
-            $price_range = '';
-        }
-        
-        
-        $products = $this -> productRepository -> filterProducts(
-            $price_range,
-            $request -> sort_filter,
-            $request -> status_filter,
-            $request -> keyword,
-        );
-        return $products;
-    }
-
 }

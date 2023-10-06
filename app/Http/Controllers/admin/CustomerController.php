@@ -22,9 +22,7 @@ class CustomerController extends Controller
             $customers = $this -> customerRepository -> filterCustomers(
                 $filters['limit'] ?? 5, 
                 $filters['sort_filter'] ?? 'latest',
-                $filters['id'] ?? null,
-                $filters['name'] ?? null,
-                $filters['phone_number'] ?? null,
+                $filters['search'] ?? null 
             );
         }else {
             $customers  = $this -> customerRepository -> paginateWhereOrderBy(['is_admin' => '0'], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
@@ -39,9 +37,7 @@ class CustomerController extends Controller
         $filterOptions = [
             'limit',
             'sort_filter',
-            'id',
-            'name',
-            'phone_number'
+            'search'
         ];
         
         $filterValue = [];

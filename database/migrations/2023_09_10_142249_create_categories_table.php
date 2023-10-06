@@ -26,7 +26,7 @@ class CreateCategoriesTable extends Migration
             $table -> string('image') -> default('') ;
             $table->string('thumbnail') ;
             $table->enum('status', [0, 1]) -> default(1);
-            $table->datetime('deleted_at') -> nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('added_by')->references('id')->on('users');

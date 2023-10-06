@@ -20,7 +20,7 @@ class CreateBorrowsTable extends Migration
             $table -> datetime('borrow_date');
             $table -> datetime('return_date');
             $table -> datetime('actual_return_date') -> nullable();
-            $table -> datetime('deleted_at') -> nullable();
+            $table->softDeletes();
             $table -> timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

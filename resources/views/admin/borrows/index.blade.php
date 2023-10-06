@@ -145,7 +145,9 @@
                                                 <span class="badge badge-warning">Chưa trả</span>
                                             @endif
                                         </td>
-                                        <td></td>
+                                        <td>
+                                            <a href="{{route('admin.borrow.edit', $borrow -> id)}}" class="m-r-15 text-muted" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="mdi mdi-pencil font-18"></i></a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

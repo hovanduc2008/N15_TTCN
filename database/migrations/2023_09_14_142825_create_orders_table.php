@@ -25,7 +25,7 @@ class CreateOrdersTable extends Migration
             $table -> string('order_code');
             $table -> string('order_note');
             $table -> datetime('successfully_delivery_at');
-            $table -> datetime('deleted_at');
+            $table->softDeletes();
             $table -> timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

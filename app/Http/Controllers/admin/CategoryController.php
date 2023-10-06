@@ -31,8 +31,7 @@ class CategoryController extends Controller
             $categories = $this -> categoryRepository -> filterCategories(
                 $filters['limit'] ?? 5, 
                 $filters['sort_filter'] ?? 'latest',
-                $filters['id'] ?? null,
-                $filters['name'] ?? null
+                $filters['search'] ?? null
             );
         }else {
             $categories  = $this -> categoryRepository -> paginateWhereOrderBy([], 'updated_at','DESC', $request -> page ?? 1, 5, ['*']);
@@ -80,17 +79,6 @@ class CategoryController extends Controller
 
         $foundCategory = $this -> categoryRepository -> findById($request -> id);
 
-
-        // if(isset($request -> is_active)) {  
-        //     $request -> merge([
-        //         'status' => "1"
-        //     ]);     
-        // }else {
-        //     $request -> merge([
-        //         'status' => "0"
-        //     ]);
-        // }
-
         $hasFileImage = $request -> hasFile('upload_image');
         $hasFileThumbnail = $request -> hasFile('upload_thumbnail');
 
@@ -116,13 +104,14 @@ class CategoryController extends Controller
     public function handleDelete(Request $request, ImageController $img) {
         $id = $request -> id;
         $foundCategory = $this -> categoryRepository -> findById($id);
-        $img -> remove($foundCategory -> image);
-        $productsDp = $this -> productRepository -> findWhere(['author_id' => $id], array('*'));
-        foreach($productsDp as $product) {
-            $img -> remove($product -> image);
-        }
-        $this -> productRepository -> deleteWhere(['category_id' => $id]);
-        $this -> categoryRepository -> delete($id);
+        $foundCategory -> delete();
+        // $img -> remove($foundCategory -> image);
+        // $productsDp = $this -> productRepository -> findWhere(['author_id' => $id], array('*'));
+        // foreach($productsDp as $product) {
+        //     $img -> remove($product -> image);
+        // }
+        // $this -> productRepository -> deleteWhere(['category_id' => $id]);
+        // $this -> categoryRepository -> delete($id);
         
         return redirect() -> route('admin.categories') -> with('success', 'Xóa thành công danh mục '.$foundCategory -> title);
     }
@@ -131,8 +120,7 @@ class CategoryController extends Controller
         $filterOptions = [
             'limit',
             'sort_filter',
-            'id',
-            'name'
+            'search'
         ];
         
         $filterValue = [];

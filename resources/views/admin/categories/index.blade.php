@@ -32,51 +32,45 @@
                         <div class="col">
                             <div class="row">
                                 <div class="col">
-                                <select name="limit" id="limit" class = "form-control">
-                                    @foreach($limit_option as $value)
-                                        @if(isset($current_filters['limit']) && $value == $current_filters['limit'])
-                                            <option selected value="{{$value}}">Hiển thị {{$value}}</option>
-                                        @else
-                                            <option value="{{$value}}">Hiển thị {{$value}}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                    
+                                    <select name="limit" id="limit" class = "form-control">
+                                        @foreach($limit_option as $value)
+                                            @if(isset($current_filters['limit']) && $value == $current_filters['limit'])
+                                                <option selected value="{{$value}}">Hiển thị {{$value}}</option>
+                                            @else
+                                                <option value="{{$value}}">Hiển thị {{$value}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="col">
-                                    <input type="text" name = "id" class="form-control" value = "{{$current_filters['id'] ?? ''}}" placeholder = "Tìm theo mã">
+                                    <select name="sort_filter" id="" class = "form-control">
+                                        @foreach($sort_option as $key => $option)
+                                            @if(isset($current_filters['sort_filter']) && $key == $current_filters['sort_filter'])
+                                                <option selected value="{{$key}}">{{$option}}</option>
+                                            @else
+                                                <option  value="{{$key}}">{{$option}}</option>
+                                            @endif
+                                            
+                                        @endforeach
+                                    </select>
                                 </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col">
-                                    <input type="text" name = "name" class = "form-control" value = "{{$current_filters['name'] ?? ''}}" placeholder = "Tìm theo tên">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="row">
-                                <select name="sort_filter" id="" class = "form-control">
-                                    @foreach($sort_option as $key => $option)
-                                        @if(isset($current_filters['sort_filter']) && $key == $current_filters['sort_filter'])
-                                            <option selected value="{{$key}}">{{$option}}</option>
-                                        @endif
-                                        <option  value="{{$key}}">{{$option}}</option>
-                                    @endforeach
-                                </select>
                             </div>
                             
                         </div>
-                        <div class="col-2 ml-2">
+                        <div class="col">
+                            <div class="row">
+                                <input type="text" class = "form-control" placeholder = "Tìm kiếm..." value = "{{$current_filters['search'] ?? ''}}" name = "search">
+                            </div>
+                        </div>
+                        <div class="col-2 ml-3">
                             <div class="row">
                                 <button class="btn btn-info" type="submit">Lọc</button>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <a class="btn btn-secondary" href="{{route('admin.categories')}}">Hủy lọc</a>
+                                <a class="btn btn-secondary ml-2" href="{{route('admin.categories')}}">Hủy lọc</a>    
                             </div>
                         </div>
                     </form>
-
+                    
                     <hr>
                     <div class="row">
                         <table id="datatable" class="table table-bordered dt-responsive nowrap dataTable no-footer dtr-inline" width="100%" cellspacing="0">

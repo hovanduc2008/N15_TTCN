@@ -57,8 +57,13 @@ Route::prefix('/admin') -> group(function() {
     // Borrow Route------------------------------------------------------------------------
     Route::middleware('admin.login') -> prefix('borrows') -> group(function() {
         Route::get('/', [BorrowController:: class, 'index']) -> name('admin.borrows');
+
         Route::get('/create', [BorrowController::class, 'createForm']) -> name('admin.borrow.create');
         Route::post('/create', [BorrowController::class, 'handleCreate']) -> name('admin.borrow.handleCreate');
+
+        Route::get('edit/{id}', [BorrowController::class, 'editForm']) -> name('admin.borrow.edit');
+        Route::put('edit/{id}', [BorrowController::class, 'handleEdit']) -> name('admin.borrow.handleEdit');
+
         Route::get('/filterbyuser/{user_id}/{type}', [BorrowController:: class, 'filterByUser']) -> name('admin.borrow.filterbyuser');
         Route::get('/filterbyproduct/{product_id}', [BorrowController:: class, 'filterByProduct']) -> name('admin.borrow.filterbyproduct');
     });

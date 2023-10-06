@@ -100,7 +100,41 @@ class BorrowController extends Controller
         $this -> borrowRepository -> create($request -> all());
 
         return redirect() -> route('admin.borrows') -> with(['success' => "Tạo thành công đơn mượn sách!"]);
+    }
+
+    // Sửa đơn mượn
+    public function editForm(Request $request) {
+        if($request -> user_id) {
+            $customers = [$this -> customerRepository -> findById($request -> user_id)];
+        }else{
+            $customers = $this -> customerRepository -> allCustomer();
+        }
+       
+        if($request -> product_id) {
+            $products = [$this -> productRepository -> findById($request -> product_id)];
+        }else {
+            $products = $this -> productRepository -> findWhere([
+                'status' => '1',
+                'type' => '1',
+                ['quantity', '>', '0']
+            ]);
+        }
+
+        $foundBorrow = $this -> borrowRepository -> findById($request -> id);
+        // dd($foundBorrow);
+        return view('admin.borrows.edit', compact('foundBorrow', 'customers', 'products'));
+    }
+
+    public function handleEdit(Request $request) {
+        $validator = $request -> validate([
+            'borrow_date' => 'required',
+            'return_date' => 'required'
+        ]);
+        $foundBorrow = $this -> borrowRepository -> findById($request -> id);
         
+        $this -> borrowRepository -> update($request -> all(), $foundBorrow -> id);
+
+        return redirect() -> route('admin.borrow.edit', $foundBorrow -> id) -> with('success', 'Updated Borrow');
     }
 
     public function handleFilter(Request $request) {

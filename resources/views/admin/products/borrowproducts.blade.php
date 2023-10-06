@@ -46,28 +46,28 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <input type="text" name = "id" class="form-control" placeholder = "Tìm theo mã">
+                                <select name="sort_filter" id="" class = "form-control">
+                                    @foreach($sort_option as $key => $option)
+                                        @if(isset($current_filters['sort_filter']) && $key == $current_filters['sort_filter'])
+                                            <option selected value="{{$key}}">{{$option}}</option>
+                                        @else
+                                            <option  value="{{$key}}">{{$option}}</option>
+                                        @endif
+                                        
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col">
-                                <input type="text" name = "title" class = "form-control" placeholder = "Tìm theo tên">
+                                <input type="text" name = "search" value = "{{$current_filters['search'] ?? ''}}" class = "form-control" placeholder = "Tìm kiếm...">
                             </div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="row">
-                            <select name="sort_filter" id="" class = "form-control">
-                                @foreach($sort_option as $key => $option)
-                                    @if(isset($current_filters['sort_filter']) && $key == $current_filters['sort_filter'])
-                                        <option selected value="{{$key}}">{{$option}}</option>
-                                    @else
-                                        <option  value="{{$key}}">{{$option}}</option>
-                                    @endif
-                                    
-                                @endforeach
-                            </select>
+                            
                         </div>
                         <br>
                         <div class="row">
@@ -133,7 +133,7 @@
                                     @if($product -> quantity > 0)
                                         {{$product -> quantity}}
                                     @else
-                                        <span class = "">Hết sách</span>
+                                        <span class = "badge badge-danger">Hết sách</span>
                                     @endif
                                 </td>
                                 

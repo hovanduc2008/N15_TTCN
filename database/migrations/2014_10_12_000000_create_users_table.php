@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->enum('is_admin', [0, 1]) -> default(0);
             $table->enum('status', [0, 1]) -> default(1);
             $table->rememberToken();
-            $table->datetime('deleted_at') -> nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
