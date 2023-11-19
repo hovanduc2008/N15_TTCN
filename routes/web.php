@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+
+// Admin Controller
 use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\admin\CustomerController;
 use App\Http\Controllers\admin\BorrowController;
@@ -9,6 +11,16 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\AuthorController;
 use App\Http\Controllers\admin\OrderController;
+
+// User Controller
+use App\Http\Controllers\user\HomeController as UserHomeController;
+use App\Http\Controllers\user\SearchController as UserSearchController;
+use App\Http\Controllers\user\AuthController as UserAuthController;
+use App\Http\Controllers\user\ProductController as UserProductController;
+use App\Http\Controllers\user\BorrowController as UserBorrowController;
+use App\Http\Controllers\user\CartController as UserCartController;
+use App\Http\Controllers\user\OrderController as UserOrderController;
+
 
 use App\Http\Controllers\CKEditorController;
 
@@ -128,5 +140,18 @@ Route::prefix('/admin') -> group(function() {
         Route::put('/change-status/{id}', [OrderController::class, 'changeStatus']) -> name('admin.orders.change_status');
     });
 
+});
+
+
+
+// User Route
+
+Route::prefix('/') -> group(function() {
+    Route::get('/', [UserHomeController::class, 'index']) -> name('home-page');
+    Route::get('search', [UserSearchController::class, 'index']) -> name('search');
+    Route::get('auth', [UserAuthController::class, 'index']) -> name('auth');
+    Route::get('products', [UserProductController::class, 'index']) -> name('products');
+    Route::get('products/{slug}', [UserProductController::class, 'index']) -> name('product_detail');
+    Route::get('products/{slug}/read', [UserProductController::class, 'readbook']) -> name('read_book');
 });
 

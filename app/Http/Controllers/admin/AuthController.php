@@ -14,11 +14,6 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth', ['except' => ['login','register']]);
-    // }
-
     public function register() {
         return view('admin.auth.register-form');
     }

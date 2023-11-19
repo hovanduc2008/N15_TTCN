@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Borrow;
+use App\Models\Author;
+
 
 class Product extends Model
 {
@@ -35,6 +37,10 @@ class Product extends Model
 
     public function borrowing() {
         return $this->hasMany(Borrow::class, 'product_id')-> whereNull('actual_return_date');
+    }
+
+    public function author() {
+        return $this -> belongsTo(Author::class, 'author_id');
     }
 
 }

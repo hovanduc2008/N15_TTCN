@@ -107,7 +107,7 @@
                                 <th>Tác giả</th>
                                 <th>Ngày xuất bản</th>
                                 <th>Giá/ngày</th>
-                                <th>Đang cho mượn</th>
+                                <th>Đang mượn</th>
                                 <th>Sẵn có</th>
                                 <th>Action</th>
                             </tr>
@@ -122,7 +122,7 @@
                                     <h6 class="mt-0 m-b-5">{{$product -> title}}</h6>
                                     <p class="m-0 font-14">{{$product -> description}}</p>
                                 </td>
-                                <td>Nguyen Nhat Anh</td>
+                                <td>{{$product -> author -> name}}</td>
                                 <td>{{date_format(date_create($product -> publication_date), 'd/m/Y')}}</td>
                                 <td>{{number_format($product -> price)}}đ</td>
                                 <td>

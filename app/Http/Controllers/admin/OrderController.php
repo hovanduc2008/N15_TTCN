@@ -80,58 +80,39 @@ class OrderController extends Controller
         $topLateReturners = $this -> customerRepository -> topLateReturners();
 
 
-        // Khởi tạo biểu đồ
+        // Biểu đồ khách hàng mượn nhiều nhất
         $chartCustomer = new SampleChart;
-
-        // Tạo mảng chứa tên khách hàng
         $customerNames = $topCustomerBorrows->pluck('name')->toArray();
-
-        // Tạo mảng chứa số lượt mượn của khách hàng
         $borrowCounts = $topCustomerBorrows->pluck('borrow_count')->toArray();
-
-        // Đặt nhãn trục x cho biểu đồ là tên khách hàng
         $chartCustomer->labels($customerNames);
-
-        // Thêm dataset cho từng khách hàng
         $chartCustomer->dataset('Lượt mượn', 'bar', $borrowCounts);
 
 
-        // Khởi tạo biểu đồ
+        // Biểu đồ khách hàng trả muộn nhiều nhất
         $chartCustomerLate = new SampleChart;
-
-        // Tạo mảng chứa tên khách hàng
         $customerNames = $topLateReturners->pluck('name')->toArray();
-
-        // Tạo mảng chứa số lượt mượn của khách hàng
         $borrowCounts = $topLateReturners->pluck('late_count')->toArray();
-
-        // Đặt nhãn trục x cho biểu đồ là tên khách hàng
         $chartCustomerLate->labels($customerNames);
-
-        // Thêm dataset cho từng khách hàng
         $chartCustomerLate->dataset('Lần muộn', 'bar', $borrowCounts);
 
         
-        // Khởi tạo biểu đồ
+        // Biểu đồ sản phẩm có lượt mượn nhiều nhất
         $chartProduct = new SampleChart;
-
-        // Tạo mảng chứa tên khách hàng
         $customerNames = $topProducts->pluck('title')->toArray();
-
-        // Tạo mảng chứa số lượt mượn của khách hàng
         $borrowCounts = $topProducts->pluck('borrow_count')->toArray();
-
-        // Đặt nhãn trục x cho biểu đồ là tên khách hàng
         $chartProduct->labels($customerNames);
-
-        // Thêm dataset cho từng khách hàng
         $chartProduct->dataset('Lượt mượn', 'bar', $borrowCounts);
+        
 
         return view('admin.orders.statistics', 
         compact('countCustomer', 
         'countOrder', 'chartCustomer', 'chartProduct', 'chartCustomerLate',
         'countBorrow',
         ));
+    }
+
+    public function CustomerStatistics() {
+
     }
 
 }

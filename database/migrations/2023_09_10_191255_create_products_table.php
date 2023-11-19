@@ -32,6 +32,7 @@ class CreateProductsTable extends Migration
             $table->enum('type', [0, 1]) -> default(0);
             $table->enum('status', [0, 1]) -> default(1);
             $table->date('publication_date') -> nullable();
+            $table->string('pdf_link') -> nullable();
             $table->softDeletes();
             $table->timestamps();
 
