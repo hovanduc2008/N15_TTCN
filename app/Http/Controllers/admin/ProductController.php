@@ -122,6 +122,7 @@ class ProductController extends Controller
         $foundProduct = $this -> productRepository -> findById($request -> id);
 
         $request -> merge([
+            'slug' => Str::slug($request -> title),
             'author_id' => $request -> author,
             'category_id' => $request -> category,
         ]);

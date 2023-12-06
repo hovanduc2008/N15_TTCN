@@ -2,15 +2,16 @@
     $menu_list = [
         [
             "title" => "Tác giả",
-            "link" => ""
+            "link" => route('authors')
         ],
         [
             "title" => "Mượn sách",
-            "link" => "Mua sách"
+            "link" => route('search', ['type' => 'borrow']),
+            
         ],
         [
             "title" => "Mua sách",
-            "link" => "Mua sách"
+            "link" => route('search', ['type' => 'sell']),
         ],
         [
             "title" => "Danh mục",

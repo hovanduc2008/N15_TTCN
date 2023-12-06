@@ -118,11 +118,4 @@ class ProductEloquentRepository extends BaseEloquentRepository {
         return $query;
     }
 
-    public function findBySlug($slug, $columns = array('*'))
-    {
-        $results = $this->model->where('slug', '=', $slug)->first($columns);
-        $this->resetModel();
-
-        return $results;
-    }
 }

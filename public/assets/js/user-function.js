@@ -26,3 +26,6 @@ const progressInterval = setInterval(() => {
     }
 }, 500);
 
+const open_href = function (href) {
+    window.location.replace(href.toString());
+}

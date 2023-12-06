@@ -17,9 +17,12 @@ use App\Http\Controllers\user\HomeController as UserHomeController;
 use App\Http\Controllers\user\SearchController as UserSearchController;
 use App\Http\Controllers\user\AuthController as UserAuthController;
 use App\Http\Controllers\user\ProductController as UserProductController;
+use App\Http\Controllers\user\AuthorController as UserAuthorController;
+
 use App\Http\Controllers\user\BorrowController as UserBorrowController;
 use App\Http\Controllers\user\CartController as UserCartController;
 use App\Http\Controllers\user\OrderController as UserOrderController;
+use App\Http\Controllers\ProxyController; 
 
 
 use App\Http\Controllers\CKEditorController;
@@ -151,7 +154,13 @@ Route::prefix('/') -> group(function() {
     Route::get('search', [UserSearchController::class, 'index']) -> name('search');
     Route::get('auth', [UserAuthController::class, 'index']) -> name('auth');
     Route::get('products', [UserProductController::class, 'index']) -> name('products');
-    Route::get('products/{slug}', [UserProductController::class, 'index']) -> name('product_detail');
+    Route::get('products/{slug}', [UserProductController::class, 'detail']) -> name('product_detail');
     Route::get('products/{slug}/read', [UserProductController::class, 'readbook']) -> name('read_book');
+    Route::get('authors', [UserAuthorController::class, 'index']) -> name('authors');
+    Route::get('authors/{slug}', [UserAuthorController::class, 'detail']) -> name('author_detail');
+    Route::get('cart', [UserCartController::class, 'index']) -> name('cart');
+    Route::get('proxy-pdf', [ProxyController::class, 'getPdf'])->middleware('cors')->name('proxy-pdf');
+    Route::get('borrow/{slug}', [UserBorrowController::class, 'borrow']) -> name('borrow');
+    Route::post('borrow/{id}', [UserBorrowController::class, 'borrow']) -> name('handle_borrow');
 });
 

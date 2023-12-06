@@ -62,6 +62,14 @@ abstract class BaseEloquentRepository
         return $results;
     }
 
+    public function findBySlug($slug, $columns = array('*'))
+    {
+        $results = $this->model->where('slug', '=', $slug)->first($columns);
+        $this->resetModel();
+
+        return $results;
+    }
+
     public function create(array $attributes) {
         $model = $this -> model -> newInstance($attributes);
         $model -> save();
@@ -224,6 +232,25 @@ abstract class BaseEloquentRepository
 
         $this->resetModel();
 
+        return $results;
+    }
+
+    public function whereLimit(array $where, $orderField, $orderType, $limit = null, $columns = array('*'))
+    {
+        $limit = is_null($limit) ? 10 : $limit;
+        foreach ($where as $field => $value) {
+            if (is_array($value)) {
+                list($field, $condition, $val) = $value;
+                $this->model = $this->model->where($field, $condition, $val);
+            } else {
+                $this->model = $this->model->where($field, '=', $value);
+            }
+        }
+        $results = $this->model->orderBy($orderField, $orderType)
+            ->limit($limit)
+            ->get( $columns);
+
+        $this->resetModel();
         return $results;
     }
 

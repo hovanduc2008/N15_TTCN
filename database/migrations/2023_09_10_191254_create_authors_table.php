@@ -17,6 +17,7 @@ class CreateAuthorsTable extends Migration
             $table->id();
             $table -> unsignedBigInteger('added_by'); // int
             $table -> string('name'); // varchar
+            $table -> string('slug'); // varchar
             $table -> text('biography') -> nullable(); // text
             $table -> string('email') -> nullable(); // 
             $table -> string('phone_number') -> nullable();

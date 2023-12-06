@@ -307,6 +307,23 @@
     font-size: 1.5rem;
 }
 
+.sidebar-filter .list > div {
+    display: flex;
+    font-size: 1.6rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidebar-filter .list > div p {
+    margin-left: 7px;
+}
+
+.sidebar-filter .list > div input[type="checkbox"] {
+    height: 14px;
+    width: 14px;
+    cursor: pointer;
+}
+
 .sidebar-filter h1 {
     font-size: 2.1rem;
     color: #83A2FF;

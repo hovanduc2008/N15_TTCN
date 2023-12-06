@@ -9,6 +9,8 @@ use App\Http\Controllers\ImageController;
 use App\Repositories\Eloquent\AuthorEloquentRepository;
 use App\Repositories\Eloquent\ProductEloquentRepository;
 
+use Illuminate\Support\Str;
+
 class AuthorController extends Controller
 {
 
@@ -51,9 +53,9 @@ class AuthorController extends Controller
 
         $request -> merge($img -> upload($request)); 
         $data = $request -> merge([
+            'slug' => Str::slug($request -> name),
             'added_by' => auth('web') -> id(),
         ]) -> all();
-
 
         $this -> authorRepository -> create($data);
 
@@ -74,6 +76,8 @@ class AuthorController extends Controller
         ]);
         $foundAuthor = $this -> authorRepository -> findById($request -> id);
 
+        
+
         if(isset($request -> is_delete)) {
             $img -> remove($foundAuthor -> image);
             $request -> merge([
@@ -91,6 +95,9 @@ class AuthorController extends Controller
             $img -> remove($foundAuthor -> thumbnail);   
         }
         $request -> merge($img -> upload($request));
+        $request -> merge([
+            'slug' => Str::slug($request -> name),
+        ]);
 
         if(isset($request -> is_delete)) {
             $request -> merge([
