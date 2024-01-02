@@ -4,6 +4,20 @@
 @endphp
 @section('style')
     <link rel="stylesheet" href="{{asset('assets/css/user-page/product-detail.css')}}">
+    <style>
+        input[type="number"] {
+            width: 100px!important;
+            height: 35px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+        }
+    </style>
 @endsection
 
 @section('main')
@@ -22,10 +36,24 @@
                             @endif
 
                             @if($foundProduct -> type == "0")
-                                <button class = "btn btn-blue">Thêm vào giỏ hàng</button>
-                                <button class = "btn btn-pink">Đặt ngay</button>
+                                <form method = "POST" action="{{route('addToCart', ['productId' => $foundProduct -> id])}}">
+                                    <button class = "btn btn-blue">Thêm vào giỏ hàng</button>
+                                    <input type="hidden" class = "addCartQuantity" name = "cart_quantity" value = "1">
+                                    @csrf
+                                    @method('POST')
+                                </form>
+                                <form method = "POST" action="{{route('orderNow', ['productId' => $foundProduct -> id])}}" method="post">
+                                    <button class = "btn btn-pink">Đặt ngay</button>
+                                    <input type="hidden" class = "orderNowQuantity" name = "cart_quantity" value = "1">
+                                    @csrf
+                                    @method('POST')
+                                </form>
+                                
                             @else
-                                <button class = "btn btn-pink" onclick="open_href('{{route('borrow', ['slug' => $foundProduct->slug])}}')">Mượn sách</button>
+                                @php 
+                                    $borrowurl = route('borrow')."/$foundProduct->slug";
+                                @endphp
+                                <button class = "btn btn-pink" onclick="open_href('{{$borrowurl}}')">Mượn sách</button>
                             @endif
                         </div>
                     </div>
@@ -39,15 +67,15 @@
                                 <p>Số lượng: <span>{{$foundProduct -> quantity}}</span></p>
                             </div>
                             <div class="price">
-                                <div class="real-price">{{$foundProduct -> price}} đ</div>
-                                <div class="old-price">{{$foundProduct -> price}} đ</div>
+                                <div class="real-price">{{number_format($foundProduct -> price)}} đ</div>
+                                <div class="old-price">{{number_format($foundProduct -> price)}} đ</div>
                                 <div class="discount">25%</div>
                             </div>
-                            @if(true)
+                            @if($foundProduct -> type == 0)
                                 <div class = "pick-quantity">
                                     <p>Số lượng:</p>
                                     <div class="input-quantity">
-                                        <input type="text">
+                                        <input type="number" min = "1" value = "1" max = "{{$foundProduct -> quantity}}">
                                     </div>
                                 </div>
                             @endif
@@ -74,4 +102,13 @@
                 </div>
             @endif
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $('.input-quantity input').addEventListener('change', function(e) {
+            $('.addCartQuantity').value = e.target.value;
+            $('.orderNowQuantity').value = e.target.value;
+        })
+    </script>
 @endsection

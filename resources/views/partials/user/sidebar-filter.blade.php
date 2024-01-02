@@ -30,6 +30,9 @@
         @if(request() -> type)
             <input type="hidden" name="type" value = "{{request() -> type}}">
         @endif
+        @if(request() -> search)
+            <input type="hidden" name="search" value = "{{request() -> search}}">
+        @endif
         <div class="btn-control">
             <a href="{{route('search')}}">Bỏ lọc</a>
             <button href="">Lọc</button>
@@ -48,9 +51,18 @@
         </div>
         <div class="price">
             <h4>Giá</h4>
+            <div class="price-progress">
+                <div class="progress">
+                    
+                </div>
+                <div class="range-input">
+                    <input type="range" class="min" min = "0" max = "10000000" value = "{{request() -> price_min ?? 0}}">
+                    <input type="range" class="max" min = "0" max = "10000000" value = "{{request() -> price_max ?? 10000000}}">
+                </div>
+            </div>
             <div class="price-input">
-                Từ: <input class = "price_min" name = "price_min" type="number" min = "0" max = "10000000" value = "{{request() -> price_min ?? 0}}">
-                Đến: <input class = "price_max" name = "price_max" type="number" min = "0" max = "10000000" value = "{{request() -> price_max ?? 10000000}}">
+                Từ: <input class = "price_min" name = "price_min" type="number" min = "0" max = "10000000" value = "0">
+                Đến: <input class = "price_max" name = "price_max" type="number" min = "0" max = "10000000" value = "10000000">
             </div>
         </div>
         <div class="categories">
@@ -84,6 +96,7 @@
 @section('scripts')
     <script>
         const form = $('.form-filter');
+        const progress = $('.price-progress .progress');
         $('.sort-by #sort').addEventListener('change', () => {
             form.submit();
         })
@@ -96,5 +109,50 @@
             form.submit();
         })
 
+        const rangeInput = $$('.range-input input');
+
+        let submitSet;
+        let priceGap = 100000;
+
+        let minValue = parseInt(rangeInput[0].value);
+        let maxValue = parseInt(rangeInput[1].value);
+
+        function setStyleProgress(minValue, maxValue, priceGap, e) {
+            console.log(maxValue-minValue);
+            if(maxValue - minValue < priceGap){
+                if(e.target.className === 'min') {
+                    rangeInput[0].value = maxValue - priceGap;
+                    $('.price_min').value = maxValue - priceGap;
+                }else {
+                    rangeInput[1].value = minValue + priceGap;
+                    $('.price_max').value = minValue + priceGap;
+                }
+            }
+            else {
+                progress.style.left = (minValue / rangeInput[0].max) * 100 + '%';
+                progress.style.right = 100 - (maxValue / rangeInput[1].max) * 100 + '%';
+                $('.price_min').value = minValue;
+                $('.price_max').value = maxValue; 
+            }      
+        }
+
+        setStyleProgress(minValue, maxValue, priceGap);
+
+        rangeInput.forEach(input => {
+            input.addEventListener('input', (e) => {
+                clearTimeout(submitSet);
+                let minValue = parseInt(rangeInput[0].value);
+                let maxValue = parseInt(rangeInput[1].value);
+
+                $('.price_min').value = minValue;
+                $('.price_max').value = maxValue;
+
+                setStyleProgress(minValue, maxValue, priceGap, e);
+
+                submitSet = setTimeout(() => {
+                    form.submit();
+                }, 1000);
+            });
+        })
     </script>
 @endsection

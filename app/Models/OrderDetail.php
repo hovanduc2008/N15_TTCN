@@ -13,10 +13,11 @@ class OrderDetail extends Model
     use HasFactory;
 
     protected $filable = [
+        'addby_id',
         'product_id',
         'order_id',
         'quantity',
-        'order_item_price'
+        'item_price'
     ];
 
     public function product()

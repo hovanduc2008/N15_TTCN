@@ -27,18 +27,23 @@ class SearchController extends Controller
     }
 
     public function index(Request $request) {
-        $products = $this -> productRepository -> all();
-        if($request -> type =='sell') {
-            $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '0'], 'updated_at','DESC', $request -> page ?? 1, 10, ['*']);
-        }else if($request -> type =='borrow') {
-            $products  = $this -> productRepository -> paginateWhereOrderBy(['type' => '1'], 'updated_at','DESC', $request -> page ?? 1, 10, ['*']);
-        }else {
-            $products  = $this -> productRepository -> paginateWhereOrderBy([], 'updated_at','DESC', $request -> page ?? 1, 10, ['*']);
-        }
 
+        
+
+        $limit = $request -> limit ?? 20;
+        $type = $request -> type ?? 'all';
+        $sort = $request -> sort ?? 'latest';
+        $search = $request -> search ?? null;
+        $cate_list = $request -> categories ?? [];
+        $author_list = $request -> authors ?? [];
+        
+
+        $products  = $this -> productRepository -> searchProducts($limit, $type, $sort, $search, $cate_list, $author_list);
+        $products2 = $this -> productRepository -> searchProducts(1000, 'all', $sort, $search, $cate_list, $author_list);
+        
         $categories = $this -> categoryRepository -> all();
         $authors = $this -> authorRepository -> all();
         
-        return view('user.search', compact('products', 'categories', 'authors'));
+        return view('user.search', compact('products', 'categories', 'authors', 'products2'));
     }
 }

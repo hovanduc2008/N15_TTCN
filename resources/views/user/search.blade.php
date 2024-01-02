@@ -3,29 +3,41 @@
 @php 
     $path = request() -> path();
     $query = http_build_query(request()->except('type'));
+
+    $allCount = $products2->count();
+    $sellCount = $products2->filter(function ($product) {
+        return $product->type == '0';
+    })->count();
+
+    $borrowCount = $products2->filter(function ($product) {
+        return $product->type == '1';
+    })->count();
     
     $types = [
         [
             "typeid" => "all",
             "name" => "Tất cả",
-            "quantity" => count($products)
+            "quantity" => $allCount
         ],
         [
             "typeid" => "sell",
             "name" => "Sách bán",
-            "quantity" => "7"
+            "quantity" => $sellCount
         ],
         [
             "typeid" => "borrow",
             "name" => "Sách mượn",
-            "quantity" => "6"
+            "quantity" => $borrowCount
         ]
     ];
+
+    $pagination = $products;
+    
 @endphp
 
 @section('style')
     <link rel="stylesheet" href="{{asset('assets/css/user-page/search.css')}}">
-
+    
     <style>
         .product-item img{
             max-height: 186.75px;
@@ -34,6 +46,14 @@
 
         .product-item .title {
             height: 45px;
+        }
+
+        .search-content .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            margin-top: 13px;
         }
     </style>
 @endsection
@@ -70,15 +90,24 @@
                                 @endif
                                 <img src="{{$item -> image}}" alt="{{$item -> title}}">
                                 <p class="title">{!!$item -> title!!}</p>
-                                <div class="real-price">{{$item -> price}} ₫</div>
+                                <div class="real-price">{{number_format($item -> price)}} ₫</div>
                                 @if($item -> type == '0')
-                                    <div class="old-price">{{$item -> price}} ₫</div>
+                                    <div class="old-price">{{number_format($item -> price)}} ₫</div>
                                 @endif
                             </a>
                         @endforeach
                     </div>
                 </div>
+                @if($products -> lastpage() > 1)
+                    <div class="pagination">
+                        @include('partials.user.pagination')
+                    </div>
+                @endif
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+
 @endsection

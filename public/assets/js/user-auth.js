@@ -12,7 +12,7 @@ const setAuthActive = function (index) {
     }
 }
 
-const deleteAuthActive = function (btn_list) {
+const deleteAuthActive = function () {
     const activeForm = $('.auth-form .form .active-form');
     const activeBtn = $('.auth-form .control .active');
 
@@ -35,3 +35,22 @@ $('.auth-form .control').addEventListener('click',(e) => {
     
 })
 
+function setFormActive() {
+    var fragmentIdentifier = window.location.hash.substring(1);
+    deleteAuthActive();
+    if(fragmentIdentifier == 'register') {
+        setAuthActive(1);
+    }else if(fragmentIdentifier == 'forgot-password') {
+        setAuthActive(2);
+    }else {
+        setAuthActive(0);
+    }
+}
+setFormActive();
+window.addEventListener('hashchange', function() {
+    setFormActive();
+});
+
+function setFlagmentIndentifier(flagmentIndent) {
+    window.location.hash = flagmentIndent;
+}

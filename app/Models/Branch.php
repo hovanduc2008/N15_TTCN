@@ -13,4 +13,6 @@ class Branch extends Model
         'name',
         'location',
     ];
+
+    
 }

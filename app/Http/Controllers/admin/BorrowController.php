@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+
+use App\Mail\BorrowNotiEMail;
 use App\Repositories\Eloquent\BorrowEloquentRepository;
 use App\Repositories\Eloquent\CustomerEloquentRepository;
 use App\Repositories\Eloquent\ProductEloquentRepository;
@@ -96,6 +98,10 @@ class BorrowController extends Controller
         if($foundProduct -> quantity <= 0) {
             return redirect() -> route('admin.borrow.create') -> with(['error' => "Sách không có sẵn!"]);
         }
+
+        $request -> merge([
+            'branch_id' => '1'
+        ]);
 
         $this -> borrowRepository -> create($request -> all());
 

@@ -26,11 +26,15 @@
         }
 
         .cart-content .right .total-price,
-        .cart-content .left .cart-header,
+        .cart-content .left .cart-header {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 13px 20px;
+        }
         .cart-content .left .cart-body {
             background-color: #fff;
             border-radius: 5px;
-            padding: 20px 13px;
+            padding: 10px 0;
         }
 
         .cart-content .left .cart-header {
@@ -42,6 +46,7 @@
 
         .cart-body .product-item {
             display: flex;
+            padding: 7px 0;
         }
 
         .cart .info {
@@ -49,7 +54,7 @@
             display: flex;
         }
         .cart .info img {
-            height: 100px;
+            height: 70px;
 
         }
 
@@ -126,6 +131,7 @@
 
         .detail-info  {
             flex: 1;
+            padding-top: 5px;
         }
 
         .detail-info .price {
@@ -136,7 +142,7 @@
 
         .detail-info .price .real-price {
             color: #000;
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             font-weight: 500;
             padding-right: 7px;
         }
@@ -144,7 +150,7 @@
         .detail-info .price .old-price {
             color: #8491A3;
             font-weight: 300;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             text-decoration: line-through;
         }
 
@@ -181,7 +187,7 @@
         .cart a {
             text-decoration: none;
             color: #000;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             
         }
 
@@ -258,33 +264,101 @@
             opacity: 0.6;
         }
 
+        .payment-info {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 13px 20px;
+            margin-top: 7px;
+        }
+
+        .info-payment {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+            margin-top: 17px;
+            margin-bottom: 13px;
+        }
+
+        .box {
+            font-size: 1.7rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .box input {
+            padding: 0 7px;
+            margin-top: 5px;
+            height: 35px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .box input:focus {
+            outline: 1px solid #333;
+        }
+
+        .box textarea {
+            padding: 5px 7px;
+            border-radius: 5px;
+        }
+
+        .box label {
+            margin-top: 7px;
+            margin-bottom: 5px;
+        }
+
+        .box textarea:focus {
+            font-size: 1.6rem;
+            outline: 1px solid #333;
+        }
+
+        .right .payment-info{
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .right .payment-info h4 {
+            margin-bottom: 13px;
+        }
+
+        .right .payment-info > div {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .right .payment-info label {
+            cursor: pointer;
+        }
+
+        .right .payment-info > div i {
+            margin-right: 5px;
+            margin-left: 10px;
+            
+        }
         
     </style>
 @endsection
 
 @section('main')
-    <div class="cart">
+    <form class="cart" action = "{{route('submitOrder')}}" method = "POST">
         <div class="container">
             <h2 class="title">
-                GIỎ HÀNG ({{$count}} sản phẩm)
+                ĐƠN HÀNG
             </h2>
             <div class="cart-content">
                 <div class="left">
                     <div class="cart-header">
-                        <div class="select">
-                            <input type="checkbox" name = "selected-all">
-                        </div>
                         <div class = "info" style = "margin-left: 7px">
-                            <span>Chọn tất cả ({{$count}} sản phẩm)</span>
+                            <span style = "font-weight: 500">Thông tin đơn hàng ({{$count}} sản phẩm)</span>
                         </div>
                         <div class = "item-quantity">
                             <span>Số lượng</span>
                         </div>
                         <div class = "item-total">
                             <span>Thành tiền</span>
-                        </div>
-                        <div class = "item-action">
-                            
                         </div>
                     </div>
                     <div class="cart-body">
@@ -293,9 +367,6 @@
                         @endphp 
                         @foreach($productsInCart as $product)
                             <div class="product-item" data-product-id = "{{$product -> id}}">
-                                <div class="select">
-                                    <input type="checkbox" name="" id="">
-                                </div>
                                 <div class="info">
                                     <div class="img"><img src="{{$product -> image}}" alt=""></div>
                                     <div class="detail-info">
@@ -307,7 +378,7 @@
                                     </div>
                                 </div>
                                 <div class = "item-quantity">
-                                    <input type="number" min = "1" max = "{{$product -> quantity}}" value = "{{$product -> quantityInCart}}" style = "width: 50px">
+                                    {{$product -> quantityInCart}}
                                 </div>
 
                                 <div class = "item-total">
@@ -318,182 +389,87 @@
                                     @endphp
                                     {{number_format($productTotal)}} ₫
                                 </div>
-                                <form action = "{{route('removeCart', ['productId' => $product -> id])}}" method = "POST" class = "item-action">
-                                    <button><i class="fa-solid fa-trash"></i></button>
-                                    @csrf
-                                    @method('POST')
-                                </form>
                             </div>
                         @endforeach
                     </div>
+                    <div class="payment-info">
+                        <h4>Thông tin giao hàng</h4>
+                        <div class="info-payment">
+                            <div class="box">
+                                <label for="name">Họ, tên người nhận</label>
+                                <input required id = "name" name = "name" value = "{{Auth::guard('web') -> user() -> name}}" type="text">
+                            </div>
+                            <div class="box">
+                                <label for="shipping_address">Địa chỉ nhận hàng</label>
+                                <input required type="text" id = "shipping_address" name = "shipping_address" value = "{{Auth::guard('web') -> user() -> address}}">
+                            </div>
+                            <div class="box">
+                                <label for="phone_number">Điện thoại</label>
+                                <input required  type="text" id = "phone_number" name = "phone_number" value = "{{Auth::guard('web') -> user() -> phone_number}}">
+                            </div>
+                            <div class="box">
+                                <label for="email">Email</label>
+                                <input required type="text" id = "email" name = "email" value = "{{Auth::guard('web') -> user() -> email}}">
+                            </div>
+                        </div>
+                        <div class="box">
+                            <label for="">Ghi chú</label>
+                            <textarea name="note" id="" cols="30" rows="10"></textarea>
+                        </div>
+                    </div>
                 </div>
                 <div class="right">
+                    <div class="payment-info">
+                        <h4>Phương thức thanh toán</h4>
+                        <div>
+                            <input type="radio" checked value = "1" name="pay_method" id="payment_method1" />
+                            <label for="payment_method1"><i class="fa-solid fa-money-bills"></i> Thanh toán khi nhận hàng</label>
+                        </div>
+                        <div>
+                            <input type="radio" value = "2" name="pay_method" id="payment_method2" />
+                            <label for="payment_method2"><i class="fa-solid fa-building-columns"></i> Thanh toán ngân hàng nội địa</label>
+                        </div>
+                    </div>
                     <div class="total-price">
                         <h3>Thành tiền</h3>
                         <div class="pay-price">
                             <p>Tổng Số Tiền</p>
-                            <p>0 ₫</p>
+                            <p>{{number_format($totalPrice)}} ₫</p>
                         </div>
                         @if(!Auth::guard('web') -> check())
                             <p class = "warn"><i class="fa-solid fa-circle-exclamation"></i> Vui lòng đăng nhập tài khoản trước khi thanh toán!</p>
                         @endif
-                        <button class = "btn-pay">
-                            THANH TOÁN
-                            @csrf
+                        <button class = "btn-pay btn-pay-enabled">
+                            ĐẶT HÀNG
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        @csrf
+        @method('POST')
+    </form>
 @endsection
 
 @section('scripts')
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Lấy tất cả các phần tử checkbox trong giỏ hàng
-            const checkboxes = $$('.cart-body .select input[type="checkbox"]');
-            const prices = $$('.item-quantity input[type="number"]');
-
-            function setBtnPayStatus(checkedOne) {
-                if(checkedOne) $('.btn-pay').classList.add('btn-pay-enabled');
-                else $('.btn-pay').classList.remove('btn-pay-enabled');
-            }
-
-            function checkSelectAllCheckbox() {
-                const selectAllCheckbox = $('.cart-header .select input[type="checkbox"]');
-                const checkboxes = $$('.cart-body .select input[type="checkbox"]');
-
-                let allChecked = true;
-                let checkedOne = false;
-                checkboxes.forEach(function(checkbox) {
-                    if (!checkbox.checked) {
-                        allChecked = false;
-                    }else {
-                        checkedOne = true;
-                    }
-                });
-                setBtnPayStatus(checkedOne);
-                selectAllCheckbox.checked = allChecked;
-            }
-
-            // Lắng nghe sự kiện khi người dùng click vào checkbox
-            checkboxes.forEach(function(checkbox) {
-                checkbox.addEventListener("change", function() {
-                    calculateTotalPrice();
-                    checkSelectAllCheckbox();
-                });
+        // Lắng nghe sự kiện thay đổi phương thức thanh toán
+        const paymentMethodRadios = document.getElementsByName('pay_method');
+        paymentMethodRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                handlePaymentMethodChange(radio.value);
             });
-
-            
-
-            prices.forEach(function(checkbox) {
-                checkbox.addEventListener("change", function() {
-                    calculateTotalPrice();
-                });
-            });
-
-            function selectAllProducts(checked) {
-                const productItems = $$('.cart-body .product-item');
-                const checkboxes = $$('.cart-content .select input[type="checkbox"]');
-                
-                checkboxes.forEach(function(checkbox) {
-                    checkbox.checked = checked;
-                });
-
-                calculateTotalPrice();
-            }
-
-            const selectAllCheckbox = $('.cart-header .select input[type="checkbox"]');
-            selectAllCheckbox.addEventListener("change", function() {
-                selectAllProducts(this.checked);
-                setBtnPayStatus(this.checked);
-            });
-
-            
-            function setChecked(count) {
-                if(count == checkboxes.length) {
-                    alert("Hello");
-                }
-            }
-
-            // Tính tổng tiền
-            function calculateTotalPrice() {
-                const productItems = $$('.cart-body .product-item');
-                let total = 0;
-
-                // Lặp qua tất cả các mục sản phẩm
-                productItems.forEach(function(item) {
-                    const checkbox = item.querySelector('.select input[type="checkbox"]');
-                    const itemQuantity = item.querySelector('.item-quantity input[type="number"]').value ?? 0;
-                    const itemTotal = item.querySelector('.item-total');
-                    const realPrice = item.querySelector('.real-price');
-
-                    // Kiểm tra xem checkbox được chọn hay không
-                    const price = parseInt(realPrice.innerText.replace(/\D/g, ''));
-
-                    item.querySelector('.item-total').innerText = formatCurrency(price * itemQuantity);
-                                       
-                    if (checkbox.checked) {
-                        total += price * itemQuantity;
-                    }
-                });
-
-                // Cập nhật tổng tiền trên giao diện
-                const totalPriceElement = $('.right .total-price .pay-price p:nth-child(2)');
-                totalPriceElement.innerText = formatCurrency(total);
-            }
-
-            // Hàm định dạng số tiền thành định dạng tiền tệ
-            function formatCurrency(amount) {
-                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-            }
         });
 
-
-        function getSelectedProducts() {
-            var selectedProducts = [];
-            var checkboxes = document.querySelectorAll('.product-item input[type="checkbox"]:checked');
-
-            checkboxes.forEach(function(checkbox) {
-                var productId = checkbox.closest('.product-item').getAttribute('data-product-id');
-                var quantity = checkbox.closest('.product-item').querySelector('.item-quantity input').value;
-                
-                selectedProducts.push({
-                    productId: productId,
-                    quantity: quantity
-                });
-            });
-
-            var csrfToken = $(".btn-pay input[type='hidden']").value;
-            // Gửi thông tin sản phẩm đến server
-            fetch("{{route('updateOrder')}}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(selectedProducts)
-            })
-            .then(function(response) {
-                if (!response.ok) {
-                    throw new Error('Error ' + response.status);
-                }
-                return response.json();
-            })
-            .then(function(data) {
-                var pattern = /^(?:\w+:)?\/\/([^\s.]+\.\S{2}|localhost[:?\d]*)\S*$/;
-                if(pattern.test(data)) {
-                    window.location.href = data;
-                }
-                
-            })
-            .catch(function(error) {
-                // Xử lý lỗi
-                console.error(error);
-            });
+        // Hàm xử lý khi có sự thay đổi phương thức thanh toán
+        function handlePaymentMethodChange(selectedValue) {
+            // Kiểm tra giá trị đã chọn
+            if (selectedValue === '1') {
+                document.querySelector('.btn-pay').innerText = 'ĐẶT HÀNG';
+            } else if (selectedValue === '2') {
+                // Mã JavaScript cho phương thức thanh toán ngân hàng nội địa
+                document.querySelector('.btn-pay').innerText = 'THANH TOÁN';
+            }
         }
-
-        $('.btn-pay').addEventListener('click', getSelectedProducts);
     </script>
 @endsection

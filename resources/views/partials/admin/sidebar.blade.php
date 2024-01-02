@@ -72,6 +72,10 @@ l@php
                 [
                     "title" => "Thống kê",
                     "route" => route('admin.statistics')
+                ],
+                [
+                    "title" => "Quản lý giao dịch",
+                    "route" => "https://sandbox.vnpayment.vn/merchantv2/Users/Login.htm?ReturnUrl=%2fmerchantv2%2fUsers%2fLogout.htm"
                 ]
             ]
         ],

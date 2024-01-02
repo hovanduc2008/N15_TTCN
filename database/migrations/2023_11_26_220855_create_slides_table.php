@@ -21,6 +21,8 @@ class CreateSlidesTable extends Migration
         });
     }
 
+    
+
     /**
      * Reverse the migrations.
      *

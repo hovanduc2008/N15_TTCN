@@ -17,12 +17,12 @@
             <div class="members">
                 <h4><span>THÀNH VIÊN</span></h4>
                 <p class = "content1">Với sự tham dự, đóng góp của các thành viên: </p>
-                <ul>
+                <ul style = "font-size: 1.3rem">
                     <li>Sinh viên: Hồ Văn Đức - 2021608034</li>
-                    <li>Sinh viên: Hồ Văn Đức - 2021608034</li>
-                    <li>Sinh viên: Hồ Văn Đức - 2021608034</li>
-                    <li>Sinh viên: Hồ Văn Đức - 2021608034</li>
-                    <li>Sinh viên: Hồ Văn Đức - 2021608034</li>
+                    <li>Sinh viên: Nguyễn Văn Nguyên - 2020605636</li>
+                    <li>Sinh viên: Phạm Minh Đức - 2020606201</li>
+                    <li>Sinh viên: Trần Thành Vinh - 2020605175</li>
+                    <li>Sinh viên: Đào Công Đoàn - 2020606491</li>
                 </ul>
                 <p class = "content2">Trong quá trình xây dựng website, thành viên đóng một vai trò quan trọng, đóng góp đa dạng kỹ năng và tâm huyết để tạo ra một trang web chất lượng và thân thiện với người dùng.</p>
             </div>

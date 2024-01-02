@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Branch;
+
 
 class Borrow extends Model
 {
@@ -16,6 +18,7 @@ class Borrow extends Model
     protected $fillable = [
         'user_id',
         'product_id',
+        'branch_id',
         'borrow_date',
         'return_date',
         'actual_return_date'
@@ -27,5 +30,9 @@ class Borrow extends Model
 
     public function customer() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function branch() {
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

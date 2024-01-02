@@ -23,6 +23,7 @@ use App\Http\Controllers\user\BorrowController as UserBorrowController;
 use App\Http\Controllers\user\CartController as UserCartController;
 use App\Http\Controllers\user\OrderController as UserOrderController;
 use App\Http\Controllers\ProxyController; 
+use App\Http\Controllers\VNPayController;
 
 
 use App\Http\Controllers\CKEditorController;
@@ -153,14 +154,46 @@ Route::prefix('/') -> group(function() {
     Route::get('/', [UserHomeController::class, 'index']) -> name('home-page');
     Route::get('search', [UserSearchController::class, 'index']) -> name('search');
     Route::get('auth', [UserAuthController::class, 'index']) -> name('auth');
+    Route::post('handle-register', [UserAuthController::class, 'handleRegister']) -> name('handle-register');
+    Route::post('handle-login', [UserAuthController::class, 'handleLogin']) -> name('handle-login');
+    Route::get('handle-logout', [UserAuthController::class, 'handleLogout']) -> name('handle-logout');
+    Route::post('handle-forget', [UserAuthController::class, 'handleForgetPassword']) -> name('handle-forget');
+
     Route::get('products', [UserProductController::class, 'index']) -> name('products');
     Route::get('products/{slug}', [UserProductController::class, 'detail']) -> name('product_detail');
     Route::get('products/{slug}/read', [UserProductController::class, 'readbook']) -> name('read_book');
     Route::get('authors', [UserAuthorController::class, 'index']) -> name('authors');
     Route::get('authors/{slug}', [UserAuthorController::class, 'detail']) -> name('author_detail');
     Route::get('cart', [UserCartController::class, 'index']) -> name('cart');
+
+    Route::post('cart/add/{productId}', [UserCartController::class, 'addToCart']) -> name('addToCart');
+    Route::post('cart/update/{productId}',[UserCartController::class, 'updateCartItem']) -> name('updateCartItem');
+    Route::post('cart/updateorder',[UserCartController::class, 'updateOrder']) -> name('updateOrder');
+    Route::post('cart/remove/{productId}',[UserCartController::class, 'removeCartItem']) -> name('removeCart');
+
+
     Route::get('proxy-pdf', [ProxyController::class, 'getPdf'])->middleware('cors')->name('proxy-pdf');
     Route::get('borrow/{slug}', [UserBorrowController::class, 'borrow']) -> name('borrow');
     Route::post('borrow/{id}', [UserBorrowController::class, 'borrow']) -> name('handle_borrow');
+
+    Route::get('profile', [UserAuthController::class, 'profile']) -> name('profile');
+    Route::put('profile', [UserAuthController::class, 'update_profile']) -> name('update_profile');
+
+    Route::get('order', [UserOrderController::class, 'index']) -> name('order');
+    Route::get('order-invoice-view/{id}', [UserOrderController::class, 'orderInvoiceView']) -> name('order-invoice-view');
+    Route::get('order-invoice-generate/{id}', [UserOrderController::class, 'orderInvoiceGenerate']) -> name('order-invoice-generate');
+    Route::post('ordernow/{productId}', [UserOrderController::class, 'orderNow']) -> name('orderNow');
+    Route::get('paymentorder', [UserOrderController::class, 'createOrder']) -> name('createOrder');
+    Route::post('submit-order', [UserOrderController::class, 'submitOrder']) -> name('submitOrder');
+    Route::get('order-detail/{id}', [UserOrderController::class, 'orderDetail']) -> name('orderDetail');
+
+    Route::get('borrow', [UserBorrowController::class, 'index']) -> name('borrow');
+    Route::post('submitborrow/{id}', [UserBorrowController::class, 'submitBorrow']) -> name('submitborrow');
+    Route::get('borrow-detail/{id}', [UserBorrowController::class, 'borrowDetail']) -> name('borrowDetail');
+
+    Route::get('createpayment', [VNPayController::class, 'createPayment']) -> name('createpayment');
+    Route::get('vnp_return', [VNPayController::class, 'Returnurl']) -> name('vnp_return');
 });
+
+Route::get('password/reset/{token}', [UserAuthController::class, 'handleResetPassword']) -> name('reset-password');
 

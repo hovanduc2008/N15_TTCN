@@ -20,7 +20,7 @@ class CreateOrderDetailsTable extends Migration
             $table -> unsignedBigInteger('order_id');
             $table -> bigInteger('quantity');
             $table -> bigInteger('item_price');
-            $table -> datetime('deleted_at');
+            $table->softDeletes();
             $table -> timestamps();
 
             $table->foreign('product_id')->references('id')->on('products');

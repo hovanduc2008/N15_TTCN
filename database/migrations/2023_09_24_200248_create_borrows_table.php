@@ -17,6 +17,7 @@ class CreateBorrowsTable extends Migration
             $table -> id();
             $table -> unsignedBigInteger('user_id');
             $table -> unsignedBigInteger('product_id');
+            $table -> unsignedBigInteger('branche_id');
             $table -> datetime('borrow_date');
             $table -> datetime('return_date');
             $table -> datetime('actual_return_date') -> nullable();
@@ -25,6 +26,7 @@ class CreateBorrowsTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('branch_id')->references('id')->on('branches');
         });
     }
 

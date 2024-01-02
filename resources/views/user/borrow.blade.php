@@ -67,6 +67,9 @@
             font-size: 1.6rem;
             color: #fff;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .btn-pay:focus {
@@ -164,6 +167,30 @@
             grid-template-columns: 1fr 1fr;
             grid-gap: 13px; 
         }
+
+        .btn-pay-enabled {
+            background: #146EBE;
+        }
+
+        .btn-pay {
+            transition: all 0.2s ease-in-out;
+            text-decoration: none
+        }
+
+        .btn-pay:hover {
+            opacity: 0.9;
+        }
+
+        .warn {
+            font-size: 1.4rem;
+            opacity: 0.8;
+            margin-bottom: 7px;
+            margin-top: 13px;
+        }
+
+        .warn i {
+            opacity: 0.6;
+        }
         
     </style>
 @endsection
@@ -175,7 +202,9 @@
                 <h2 class="title">
                     MƯỢN SÁCH
                 </h2>
-                <form action="{{route('handle_borrow', ['id' => 'id'])}}" method="post">
+                <form action="{{route('submitborrow', ['id' => $foundProduct -> id])}}" method="post">
+                    @method('POST')
+                    @csrf
                     <div class="left">
                         <div class="product-info">
                             <div class="img">
@@ -188,7 +217,8 @@
                                 @if($foundProduct -> pdf_link)
                                     <a target = "_blank" href="{{$foundProduct -> pdf_link ?? ''}}">Đọc thử</a>
                                 @endif
-                                <p class="price">{{$foundProduct -> price}} đ / ngày</p>
+                                <p class="price">{{number_format($foundProduct -> price)}} đ / ngày</p>
+                                <input type="hidden" class = "priceHidden" value = "{{$foundProduct -> price}}">
                                 
                             </div>
                         </div>
@@ -199,17 +229,19 @@
                             <div class="time">
                                 <div class="time1">
                                     <label for="">Ngày mượn</label>
-                                    <input type="datetime-local" name="" id="">
+                                    <input class = "borrow_date" type="datetime-local" value = "{{date('Y-m-d\TH:i')}}" name="borrow_date" id="">
                                 </div>
                                 <div class="time1">
                                     <label for="">Ngày trả dự kiến</label>
-                                    <input type="datetime-local" name="" id="">
+                                    <input class = "return_date" type="datetime-local" value = "{{date('Y-m-d\TH:i', strtotime('+3 days'))}}" name="return_date" id="">
                                 </div>
                             </div>
                             <div class="branch">
                                 <label for="">Nhận sách tại</label>
-                                <select name="" id="">
-                                    <option value="">123 ABC, Từ Liêm, Hà Nội</option>
+                                <select name="branch" id="">
+                                    @foreach($branches as $item) 
+                                        <option value="{{$item -> id}}">{{$item -> name}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="note">
@@ -224,20 +256,28 @@
                             <div class = "info-pay">
                                 <div>
                                     <p>Giá</p>
-                                    <p>1000 đ</p>
+                                    <p>{{number_format($foundProduct -> price)}} đ</p>
                                 </div>
                                 <div>
                                     <p>Số ngày mượn</p>
-                                    <p>0 ngày</p>
+                                    <p class = "days">0 ngày</p>
                                 </div>
                             </div>
                             <div class="pay-price">
                                 <p>Tổng Số Tiền</p>
                                 <p>0 đ</p>
                             </div>
-                            <button class = "btn-pay">
-                                THANH TOÁN
-                            </button>
+                            @if(!(auth() -> guard('web') -> user() -> email_verified_at))
+                                <p class = "warn"><i class="fa-solid fa-circle-exclamation"></i> Vui lòng xác thực email để đăng ký mượn sách!</p>
+                                <a href = "{{route('profile')}}" class = "btn-pay">
+                                    THANH TOÁN
+                                </a>
+                            @else 
+                                <button class = "btn-pay">
+                                    THANH TOÁN
+                                </button>
+                            @endif
+                            
                         </div>
                     </div>
                 </form>
@@ -249,5 +289,52 @@
 @endsection
 
 @section('scripts')
-    
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            // Lấy các phần tử cần thiết
+            const borrowForm = document.querySelector('.borrow form');
+            const borrowButton = document.querySelector('.total-price button');
+            const borrowPrice = $('.priceHidden').value; 
+            
+
+            // Lắng nghe sự kiện khi ngày mượn hoặc ngày trả dự kiến thay đổi
+            borrowForm.addEventListener('change', updateTotal);
+
+            // Hàm tính số ngày mượn và tổng tiền mượn sách
+            function updateTotal() {
+                const borrowStartDate = new Date($('.borrow_date').value);
+                const borrowEndDate = new Date($('.return_date').value);
+
+                
+
+                const diffTime = Math.abs(borrowEndDate - borrowStartDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                const totalPrice = diffDays * borrowPrice;
+
+                // Cập nhật số ngày mượn và tổng tiền mượn sách
+                const infoPay = document.querySelector('.info-pay');
+                const daysElement = infoPay.querySelector('.days');
+                
+                const totalPriceElement = document.querySelector('.pay-price p:nth-child(2)');
+                
+
+                daysElement.textContent = diffDays + ' ngày';
+                totalPriceElement.textContent = totalPrice.toLocaleString() + ' đ';
+
+                // Kiểm tra nếu ngày trả dự kiến nhỏ hơn ngày mượn thì vô hiệu hóa nút thanh toán
+                if (borrowEndDate < borrowStartDate) {
+                    borrowButton.disabled = true;
+                    borrowButton.classList.remove('btn-pay-enabled');
+                    alert('Ngày trả dự kiến phải lớn hơn này mượn!');
+                } else {
+                    borrowButton.disabled = false;
+                    borrowButton.classList.add('btn-pay-enabled');
+                }
+            }
+
+            // Mặc định gọi hàm để tính số ngày mượn và tổng tiền mượn sách
+            updateTotal();
+        });
+    </script>
 @endsection
