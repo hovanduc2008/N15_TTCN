@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Str;
 use App\Mail\ForgetPasswordMail;
+use App\Mail\VerifyEmail;
 use Mail;
 
 class AuthController extends Controller
@@ -159,7 +160,33 @@ class AuthController extends Controller
         $user->save();
     }
 
-    public function profile() {
-        return 1;
+    public function profile(Request $request) {
+        return view('user.profile');
+    }
+
+    public function verify_request(Request $request) {
+        $email = auth() -> guard('web') -> user() -> email;
+        $verifylink = url('/handle_verify').'?email='.urlencode($email);
+        Mail::to($email)->send(new VerifyEmail($verifylink));
+        return redirect()->back();
+    }
+
+    public function handleVerifyEmail(Request $request) {
+        // Lấy email và token từ request
+        $email = $request->get('email');
+        $token = $request->get('token'); // Đảm bảo rằng bạn tạo token duy nhất và gửi nó trong email
+    
+        // Kiểm tra xem email có tồn tại và token có đúng hay không
+        $user = DB::table('users')->where('email', $email)->first();
+    
+        if ($user) {
+            // Cập nhật trạng thái xác minh email cho người dùng
+            DB::table('users')->where('email', $email)->update(['email_verified_at' => now()]);
+    
+            // Hiển thị thông báo xác minh thành công hoặc chuyển hướng người dùng đến trang đăng nhập
+            return redirect()->route('profile')->with('success', 'Email của bạn đã được xác minh thành công!');
+        } else {
+            return redirect()->route('login')->with('error', 'Xác minh email không thành công. Vui lòng thử lại!');
+        }
     }
 }

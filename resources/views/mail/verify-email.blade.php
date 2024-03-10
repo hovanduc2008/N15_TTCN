@@ -43,10 +43,10 @@
 <body>
     <div class="container">
         <h2>Verify Email</h2>
-        <p>Dear <strong>{{$name}}</strong>,</p>
+        <p>Dear <strong>{{auth() -> guard('web') -> user() -> name}}</strong>,</p>
         <p>Thank you for registering with us. To complete your registration, please verify your email address by clicking the button below:</p>
         <p>
-            <a class="button" >Verify Email</a>
+            <a class="button" href="{{$verifylink}}">Verify Email</a>
         </p>
         <p>If you did not create an account, you can safely ignore this email.</p>
         <div class="footer">

@@ -177,6 +177,8 @@ Route::prefix('/') -> group(function() {
     Route::post('borrow/{id}', [UserBorrowController::class, 'borrow']) -> name('handle_borrow');
 
     Route::get('profile', [UserAuthController::class, 'profile']) -> name('profile');
+    Route::get('verify_request', [UserAuthController::class, 'verify_request']) -> name('verify_request');
+    Route::get('handle_verify', [UserAuthController::class, 'handleVerifyEmail']) -> name('handleVerifyEmail');
     Route::put('profile', [UserAuthController::class, 'update_profile']) -> name('update_profile');
 
     Route::get('order', [UserOrderController::class, 'index']) -> name('order');

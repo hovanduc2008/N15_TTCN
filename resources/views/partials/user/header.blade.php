@@ -17,7 +17,7 @@
                     <p class="text">Giỏ hàng</p>
                 </a>
                 @if(Auth::guard('web') -> check()) 
-                    <div class="account-login">
+                    <div class="account-login" style="z-index:10">
                         <a href="{{route('profile')}}">
                             <p class="icon"><i class="fa-solid fa-user"></i></p>
                             <p class="text">{{Auth::guard('web') -> user() -> name}}</p>
@@ -30,7 +30,7 @@
                         </ul>
                     </div>
                 @else 
-                    <div  class="account">
+                    <div  class="account" style="z-index:10">
                         <a href="{{route('auth')}}">
                             <p class="icon"><i class="fa-solid fa-user"></i></p>
                             <p class="text">Tài khoản</p>
