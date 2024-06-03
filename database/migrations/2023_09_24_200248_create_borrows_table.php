@@ -26,7 +26,7 @@ class CreateBorrowsTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('branch_id')->references('id')->on('branches');
+            // $table->foreign('branch_id')->references('id')->on('branches');
         });
     }
 

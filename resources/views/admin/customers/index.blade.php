@@ -1,7 +1,7 @@
 @extends('layouts.admin-layout')
 
 @php
-    $page_title = "Quản lý tác giả";
+    $page_title = "Quản lý khách hàng";
 
     $status_option = [
         "2" => "Tất cả",
