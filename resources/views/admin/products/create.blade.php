@@ -52,7 +52,7 @@
                                             <input id="quantity" name="quantity" type="text" class="form-control" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="price">Giá bán/ Giá cho mượn</label>
+                                            <label for="price">Giá bán</label>
                                             <input id="price" name="price" type="text" class="form-control" required>
                                         </div>
 
@@ -72,13 +72,14 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <input type="hidden" value = "0" name="type">
+                                        <!-- <div class="form-group">
                                             <label class="control-label">Loại</label>
                                             <select class="form-control select2" name = "type" required>
                                                 <option value="0">Sách bán</option>
                                                 <option value="1">Sách cho mượn</option>
                                             </select>
-                                        </div>
+                                        </div> -->
                                         
                                     </div>
 

@@ -5,12 +5,7 @@
             "link" => route('authors')
         ],
         [
-            "title" => "Mượn sách",
-            "link" => route('search', ['type' => 'borrow']),
-            
-        ],
-        [
-            "title" => "Mua sách",
+            "title" => "Sản phẩm",
             "link" => route('search', ['type' => 'sell']),
         ],
         [

@@ -14,15 +14,15 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="title">Category Title</label>
+                                    <label for="title">Tên danh mục</label>
                                     <input id="title" name="title" type="text" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="description">Description</label>
+                                    <label for="description">Mô tả</label>
                                     <textarea name = "description" class="form-control" id="description" rows="5"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="content">Content</label>
+                                    <label for="content">Nội dung</label>
                                     <textarea class="form-control" name = "content" id="content" rows="5"></textarea>
                                 </div>
                             </div>
@@ -30,8 +30,8 @@
                             <div class="col-sm-6">
                                 
                                 <div class="form-group">
-                                    <label>Product Image</label> <br/>
-                                    <img src="assets/images/products/1.jpg" alt="product img" class="img-fluid" style="max-width: 200px;" />
+                                    <label>Hình ảnh</label> <br/>
+                                    <img src="assets/images/products/1.jpg" alt="" class="img-fluid" style="max-width: 200px;" />
                                     <br/>
                                     <input type="file" name = "upload_image" class="btn btn-purple m-t-10 waves-effect waves-light" required/>
                                 </div>

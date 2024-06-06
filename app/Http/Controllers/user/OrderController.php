@@ -138,6 +138,7 @@ class OrderController extends Controller
         
         $productsInCart = [];
         $totalPrice = 0;
+        $order_title = "";
         foreach ($cart as $item) {
             if($item['checked'] == 1) {
                 $product = $this -> productRepository -> findById($item['productid']);
@@ -145,6 +146,8 @@ class OrderController extends Controller
                     $totalPrice += ($product['price'] * $item['quantity']);
                     $product->quantityInCart = $item['quantity'] ?? 1;
                     $productsInCart[] = $product;
+
+                    $order_title .= $product -> title." [x".$product->quantityInCart."]  ";
                 }
             }
         }
@@ -155,7 +158,7 @@ class OrderController extends Controller
             'order_note' => $request -> note ?? '',
             'payment_method' => $request -> pay_method,
             'order_code' => '',
-            'order_title' => 'Order Details'
+            'order_title' => $order_title
         ]);
 
         //dd($request -> all());

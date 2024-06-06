@@ -28,7 +28,7 @@ class HomeController extends Controller
 
     function index() {
         $categories = $this-> categoryRepository -> whereLimit([], 'id', 'ASC', 10);
-        $products = $this -> productRepository -> whereLimit(["type" => 2], 'id', 'ASC', 8);
+        $products = $this -> productRepository -> whereLimit(["type" => 1], 'id', 'ASC', 8);
         
         return view('user.index', compact('categories', 'products'));
     }

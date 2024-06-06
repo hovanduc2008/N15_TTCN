@@ -189,7 +189,7 @@
             font-weight: 500;
         }
 
-        .statistical p:nth-child(3) {
+        /* .statistical p:nth-child(3) {
             color: #FFC107;
         }
 
@@ -199,7 +199,7 @@
 
         .statistical p:nth-child(5) {
             color: #4CAF50;
-        }
+        } */
 
     </style>
 @endsection
@@ -231,9 +231,12 @@
                     </div>
 
                     @php 
+                        $processing = 0;
+                        $approved = 0;
                         $prepare = 0;
                         $shipping = 0;
                         $shipped = 0;
+                        $cancel = 0;
                     @endphp
                     <div class="cart-body">
                         @foreach($orders as $order)  
@@ -249,17 +252,32 @@
                                 </div>
                                 <div class = "item-status">
                                     @if($order -> order_status == 0) 
-                                        <p style = "color: #FFC107">Chuẩn bị hàng</p>
+                                        <p style = "color: #FFC107">Đang xử lý</p>
+                                        @php 
+                                            $processing++;
+                                        @endphp
+                                    @elseif($order -> order_status == 1)
+                                        <p style = "color: #FF9800">Đã duyệt</p>
+                                        @php 
+                                            $approved++;
+                                        @endphp
+                                    @elseif($order -> order_status == 2)
+                                        <p style = "color: #FF9800">Đang chuẩn bị</p>
                                         @php 
                                             $prepare++;
                                         @endphp
-                                    @elseif($order -> order_status == 1)
+                                    @elseif($order -> order_status == 3)
                                         <p style = "color: #FF9800">Đang giao hàng</p>
                                         @php 
                                             $shipping++;
                                         @endphp
+                                    @elseif($order -> order_status == 5)
+                                        <p style = "color: #EA4335">Đã hủy</p>
+                                        @php 
+                                            $cancel++;
+                                        @endphp
                                     @else
-                                        <p style = "color: #4CAF50">Đã nhận hàng</p>
+                                        <p style = "color: #4CAF50">Đã giao hàng</p>
                                         @php 
                                             $shipped++;
                                         @endphp
@@ -281,9 +299,12 @@
                     <div class="statistical">
                         <h2>Thống kê đơn hàng</h2>
                         <p class = "all">Tổng số: {{count($orders)}}</p>
+                        <p>Đang xử lý: {{$processing}}</p>
+                        <p>Đã duyệt: {{$approved}}</p>
                         <p>Đang chuẩn bị: {{$prepare}}</p>
                         <p>Đang giao: {{$shipping}}</p>
-                        <p>Đã giao: {{$shipped}}</p>
+                        <p>Thành công: {{$shipped}}</p>
+                        <p>Hủy: {{$cancel}}</p>
                     </div>
                 </div>
             </div>

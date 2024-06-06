@@ -58,7 +58,7 @@ class ProductEloquentRepository extends BaseEloquentRepository {
     }
 
     public function filterBorrowProducts($limit ,$sort_filter, $search, $author_id, $cate_id) {
-        $query = $this->model->select('products.*') -> where('type', '1');
+        $query = $this->model->select('products.*') -> where('type', '0');
         
         if ($search) {
             $query = $query->where(function($query) use ($search) {
@@ -109,8 +109,8 @@ class ProductEloquentRepository extends BaseEloquentRepository {
         $query = $this->model->select('products.*');
 
         if($type == 'sell') $query -> where('type', '0');
-        else if($type == 'borrow') $query -> where('type', '1');
-        
+        else if($type == 'borrow') $query -> where('type', '0');
+        $query -> where('type', '0');
         
         if ($search) {
             $query = $query->where(function($query) use ($search) {

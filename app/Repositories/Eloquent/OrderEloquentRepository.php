@@ -9,15 +9,21 @@ class OrderEloquentRepository extends BaseEloquentRepository {
         return Order::class;
     }
 
-    public function filterOrders($sort_filter, $status, $id) {
+    public function filterOrders($limit ,$sort_filter, $search) {
         $query = $this->model->select('orders.*');
-    
-        if ($status == 0 || $status == 1 || $status == 2) {
-            $query = $query->where('orders.order_status', $status);
-        }
-    
-        if ($id) {
-            $query = $query->where("id","=", "$id");
+        if($search) {
+            if(strpos($search, '#') === 0) {
+                $query = $query->where(function($query) use ($search) {
+                    $s = ltrim($search, '#');
+                    $query->orWhere('id',"=",  "$s");
+                });
+            }
+            else {
+                $query = $query->where(function($query) use ($search) {
+                    $query->orWhere('id',"like",  "%$search%")
+                        ->orWhere("order_title", "like", "%$search%");
+                });
+            }
         }
     
         if ($sort_filter) {
@@ -28,10 +34,16 @@ class OrderEloquentRepository extends BaseEloquentRepository {
                 case 'oldest':
                     $query = $query->orderBy('orders.created_at', 'asc');
                     break;
+                    $query = $query->orderBy('orders.order_title', 'desc');
+                    break;
                 default:
                     break;
             }
         }
-        return $query->get();
+    
+        $results = $query->paginate($limit);
+    
+        return $results;
     }
+
 }

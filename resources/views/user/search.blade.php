@@ -18,16 +18,6 @@
             "typeid" => "all",
             "name" => "Tất cả",
             "quantity" => $allCount
-        ],
-        [
-            "typeid" => "sell",
-            "name" => "Sách bán",
-            "quantity" => $sellCount
-        ],
-        [
-            "typeid" => "borrow",
-            "name" => "Sách mượn",
-            "quantity" => $borrowCount
         ]
     ];
 

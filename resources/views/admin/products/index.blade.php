@@ -121,7 +121,7 @@
                                         <h6 class="mt-0 m-b-5">{{$product -> title}}</h6>
                                         <p class="m-0 font-14" style = "max-width: 250px; overflow: hidden">{{$product -> description}}</p>
                                     </td>
-                                    <td>{{$product -> author -> name}}</td>
+                                    <td>{{$product -> author -> name ?? ''}}</td>
                                     
                                     <td>{{date_format(date_create($product -> publication_date), 'd/m/Y')}}</td>
                                     <td>{{number_format($product -> quantity)}}</td>

@@ -60,7 +60,7 @@
                                     <input id="quantity" name="quantity" type="text" value = "{{($foundProduct -> quantity)}}" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="price">Giá bán/ Giá cho mượn</label>
+                                    <label for="price">Giá bán</label>
                                     <input id="price" name="price" type="text" value = "{{($foundProduct -> price)}}" class="form-control"required >
                                 </div>
 
@@ -89,7 +89,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label class="control-label">Loại</label>
                                     <select class="form-control select2" name = "type" required>
                                         @foreach($types as $key => $type) 
@@ -102,7 +102,7 @@
                                             @endif
                                         @endforeach
                                     </select>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">

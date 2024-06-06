@@ -111,7 +111,7 @@
                 </div>
             </div>
             <div class="products">
-                <h2 class="title">Sách Cho Mượn</h2>
+                <h2 class="title">Đề xuất</h2>
                 <div class="product-list">
                     @foreach($products as $item)
                         <a href = "{{route('product_detail', ['slug' => $item -> slug])}}" class="product-item" title = "{{$item -> title ?? ''}}">

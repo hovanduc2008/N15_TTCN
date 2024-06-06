@@ -38,9 +38,20 @@ class OrderController extends Controller
     }
 
     public function index(Request $request) {
-        $orders  = $this -> orderRepository -> paginateWhereOrderBy([], 'updated_at','DESC', 1, 3, ['*']);
-        $old_filters = $request -> all();
-        return view('admin.orders.index', compact('orders', 'old_filters'));
+        $filters = $this -> handleFilter($request);
+
+        if(count($filters) > 0) {
+            $orders = $this -> orderRepository -> filterOrders(
+                $filters['limit'] ?? 5, 
+                $filters['sort_filter'] ?? 'latest',
+                $filters['search'] ?? null
+            );
+        }else {
+            $orders  = $this -> orderRepository -> paginateWhereOrderBy([], 'updated_at','DESC', $request -> page ?? 1, 10, ['*']);
+        }
+
+        $current_filters = $request -> all();
+        return view('admin.orders.index', compact('orders', 'current_filters'));
     }
 
     public function detail(Request $request) {
@@ -115,4 +126,22 @@ class OrderController extends Controller
 
     }
 
+    public function handleFilter(Request $request) {
+        $filterOptions = [
+            'limit',
+            'sort_filter',
+            'search'
+        ];
+        
+        $filterValue = [];
+        
+        foreach ($filterOptions as $key => $value) {
+            if ($request->has($value)) {
+                $filterValue[$value] = $request->input($value);
+            }
+        }
+        return $filterValue;
+    }
+
+    
 }
