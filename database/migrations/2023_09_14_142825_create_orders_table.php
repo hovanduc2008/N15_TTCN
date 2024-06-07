@@ -21,7 +21,7 @@ class CreateOrdersTable extends Migration
             $table -> bigInteger('total_amount') ;
             $table -> string('payment_method') -> nulable();
             $table -> enum('payment_status', [0, 1]) -> default(0) -> nulable();
-            $table -> enum('order_status', [0, 1, 2]) -> default(0) -> nulable();
+            $table -> enum('order_status', [0, 1, 2, 3, 4, 5]) -> default(0) -> nulable();
             $table -> string('order_code') -> nulable();
             $table -> string('order_note') -> nulable();
             $table -> datetime('successfully_delivery_at') -> nulable();

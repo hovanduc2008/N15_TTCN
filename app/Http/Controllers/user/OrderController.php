@@ -79,15 +79,13 @@ class OrderController extends Controller
     public function orderNow(Request $request) {
         $productId = $request -> productId;
         $product = Product::findOrFail($productId);
-
-        // Kiểm tra xem giỏ hàng đã tồn tại hay chưa
+        
         if (!$request->session()->has('cart')) {
             $cart = [];
         } else {
             $cart = $request->session()->get('cart');
         }
 
-        // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng hay chưa
         $existingProduct = null;
         foreach ($cart as $key => $item) {
             $item['checked'] = 0;
@@ -96,7 +94,24 @@ class OrderController extends Controller
                 break;
             }
         }
+        
+        if ($existingProduct !== null) {
+            unset($cart[$existingProduct]);
+            
+        } else {
+            $cart[] = [
+                'productid' => $productId,
+                'cart_quantity' => $request->cart_quantity,
+                'quantity' => $request->cart_quantity,
+                'checked' => 1
+            ];
+        }
+
+        $request->session()->put('cart', $cart);
+
         $cart = $request->session()->get('cart');
+
+        
 
         foreach ($cart as &$item) {
             if (!($item['productid'] == $productId)) {
@@ -105,24 +120,6 @@ class OrderController extends Controller
         }
 
         $request->session()->put('cart', $cart);
-
-        // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
-        if ($existingProduct !== null) {
-            $cart[$existingProduct]['cart_quantity'] = $request->cart_quantity;
-            $cart[$existingProduct]['checked'] = 1;
-        } else {
-            // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm sản phẩm mới
-            $cart[] = [
-                'productid' => $productId,
-                'quantity' => $request->cart_quantity,
-                'cart_quantity' => $request->cart_quantity,
-                'checked' => 1
-            ];
-        }
-        
-        // Lưu lại giỏ hàng trong session
-        $request->session()->put('cart', $cart);
-
        
         return redirect() -> route('createOrder');
     }
